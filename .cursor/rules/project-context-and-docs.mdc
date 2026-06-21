@@ -1,0 +1,23 @@
+---
+description: 项目背景、文档归档、公共规范沉淀
+alwaysApply: false
+---
+
+# 项目背景与文档规范
+
+## 开发前
+
+- 先读 `README.md`，必要时查 `docs/`，避免与既有架构和业务目标冲突。
+- README/docs 与代码不一致时，先澄清或同步文档，再扩大实现。
+
+## 文档位置
+
+- 人工维护文档放 `docs/`，根目录只保留 `README.md`。
+- 常用目录：`docs/architecture/`、`docs/api/`、`docs/development/`、`docs/guides/`、`docs/decisions/`、`docs/research/`。
+- AI 生成的代码知识索引可放 `.qoder/repowiki/`，用于辅助理解代码，不替代 `docs/`。
+
+## 公共规范沉淀
+
+- 新增或调整通用封装、统一组件、公共工具、跨模块约定时，必须同步记录。
+- 面向开发者的规范优先写入 `docs/development/`；会影响 Agent 行为的硬约束同步写入 `.cursor/rules/` 与 `.qoder/rules/`。
+- PR/Issue 中要说明新增规范的位置和适用范围。

@@ -1,0 +1,23 @@
+---
+trigger: model_decision
+description: 切分支、合并、处理 hotfix
+---
+
+# 分支策略
+
+- `main` 是受保护主干，只接受 PR 合入，禁止直接提交或推送。
+- 开工前同步最新 `main`，再按 Issue 创建短期分支。
+- 一条分支只服务一个 Issue 或一个可独立合并的小任务。
+- 范围扩大时拆 Issue/拆分支，不把无关改动混入同一 PR。
+
+## 命名
+
+- 新功能：`feat/issue-<编号>-<slug>`
+- 缺陷修复：`fix/issue-<编号>-<slug>`
+- 文档/规则/杂务：`docs/issue-<编号>-<slug>` / `chore/issue-<编号>-<slug>`
+- 紧急修复：`hotfix/<slug>`；不合入探索：`spike/<name>-<slug>`
+- 分支名只用小写英文、数字和连字符。
+
+## 生命周期
+
+`git switch main && git pull` → `git switch -c <type>/issue-<编号>-<slug>` → 小步提交 → PR 到 `main` → 合入后删分支。

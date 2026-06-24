@@ -18,6 +18,10 @@ alwaysApply: false
 - 紧急修复：`hotfix/<slug>`；不合入探索：`spike/<name>-<slug>`
 - 分支名只用小写英文、数字和连字符。
 
+## 冲突预检
+
+开工前查看 open PR；若目标 Issue 预计改动与已有 PR 重叠较多（约 3 个以上文件）或命中公共组件、迁移、核心配置，先确认依赖/优先级，再决定开工、等待或拆分。
+
 ## 生命周期
 
 `git switch main && git pull` → `git switch -c <type>/issue-<编号>-<slug>` → 小步提交 → PR 到 `main` → 合入后删分支。

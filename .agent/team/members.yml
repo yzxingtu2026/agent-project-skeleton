@@ -1,0 +1,33 @@
+members:
+  yz-yang04:
+    name: "杨明锋"
+    role: "PM项目经理"
+    github:
+      username: "yz-yang04"
+      email: "yz-yang04@users.noreply.github.com"
+    dingtalk:
+      user_id: "062435460126287653"
+  zhihengwugou:
+    name: "宋志恒"
+    role: "全栈开发"
+    github:
+      username: "zhihengwugou"
+      email: "zhihengwugou@users.noreply.github.com"
+    dingtalk:
+      user_id: "02231800553223306278"
+  guodong711:
+    name: "果冻"
+    role: "测试专员"
+    github:
+      username: "guodong711"
+      email: "guodong711@users.noreply.github.com"
+    dingtalk:
+      user_id: "015528560701843167"
+  yanghaifeng666:
+    name: "杨海锋"
+    role: "测试专员"
+    github:
+      username: "yanghaifeng666"
+      email: "yanghaifeng666@users.noreply.github.com"
+    dingtalk:
+      user_id: "361115036626346460"

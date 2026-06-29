@@ -1,0 +1,19 @@
+{
+  "skills": [
+    {
+      "id": "qa-assist",
+      "source": ".agent/skills/qa-assist",
+      "qoder": {
+        "path": ".qoder/skills/qa-assist/SKILL.md"
+      },
+      "codex": {
+        "path": ".codex/skills/qa-assist/SKILL.md",
+        "enabled": false
+      },
+      "claude": {
+        "path": ".claude/commands/qa-assist.md",
+        "enabled": false
+      }
+    }
+  ]
+}

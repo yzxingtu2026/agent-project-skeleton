@@ -1,0 +1,20 @@
+{
+  "name": "@yzxingtu/agent-rules",
+  "version": "0.0.0",
+  "description": "Sync shared AI agent rules and skills into vendor-specific rule directories.",
+  "main": "./src/cli.js",
+  "bin": {
+    "agent-rules": "./cli.js"
+  },
+  "scripts": {
+    "check": "node --check cli.js && node --check src/cli.js && node --check src/commands.js && node --check src/init.js && node --check src/render.js"
+  },
+  "files": [
+    "cli.js",
+    "src"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED"
+}

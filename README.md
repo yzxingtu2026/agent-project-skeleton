@@ -5,27 +5,34 @@
 ## 使用方式
 
 1. 从本仓库创建新项目：点击 GitHub 的 **Use this template**。
-2. 复制 `AGENTS.md.example` 为本地 `AGENTS.md`，填写当前使用者、角色和项目上下文。
-3. 替换规则中的占位符：项目名称、仓库地址、默认分支、团队沟通渠道、运行时目录、技术栈和开发硬约束。
-4. 按项目情况调整 `.cursor/rules/*` 与 `.qoder/rules/*`，保持两套规则语义一致。
-5. 新增通用封装、统一组件、公共工具或跨模块约定时，同步记录到规则文件或 `docs/development/`。
+2. 运行 `node .agent/tools/agent-rules/cli.js init`，填写当前使用者姓名、GitHub 用户名和提交邮箱。
+3. 替换规则源中的占位符：项目名称、仓库地址、默认分支、团队沟通渠道、运行时目录、技术栈和开发硬约束。
+4. 按项目情况调整 `.agent/rules/`、`.agent/skills/`、`.agent/team/`，再运行 `node .agent/tools/agent-rules/cli.js sync`。
+5. 查看本地生成的 `AGENTS.md` / `CLAUDE.md`，确认项目上下文和使用者信息。
+6. 新增通用封装、统一组件、公共工具或跨模块约定时，同步记录到规则源或 `docs/development/`。
 
 ## 目录
 
 ```text
-AGENTS.md.example
-.cursor/rules/
-.qoder/rules/
+.agent/rules/
+.agent/skills/
+.agent/team/
+.agent/adapters/
+.agent/templates/
+.agent/tools/agent-rules/
 docs/development/
 .github/ISSUE_TEMPLATE/
 .github/PULL_REQUEST_TEMPLATE.md
 ```
 
+`.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商目录由 CLI 本地生成，已加入 `.gitignore`，不作为模板源提交。
+
 ## 建议初始化
 
 ```bash
-cp AGENTS.md.example AGENTS.md
+node .agent/tools/agent-rules/cli.js init
+node .agent/tools/agent-rules/cli.js sync
 git switch -c chore/initialize-project-rules
 ```
 
-`AGENTS.md` 通常包含个人身份和本地协作偏好，建议保持在 `.gitignore` 中，不提交到仓库。
+`init` 会优先按 GitHub 用户名或提交邮箱匹配 `.agent/team/members.yml`，再从 `.agent/team/roles.yml` 写入对应角色说明。`AGENTS.md` / `CLAUDE.md` 包含个人身份和本地协作偏好，已放入 `.gitignore`，不要提交到仓库。

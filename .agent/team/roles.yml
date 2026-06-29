@@ -1,0 +1,47 @@
+roles:
+  PM项目经理:
+    title: "项目负责人 / PM"
+    responsibilities:
+      - "需求拆解、优先级排序、Issue 管理、PR 审查与合并决策。"
+    permissions:
+      - "可创建/关闭 Issue、调整标签与里程碑、合并 PR。"
+    preferences:
+      - "先对齐范围和验收标准，再推动实现。"
+  全栈开发:
+    title: "全栈开发"
+    responsibilities:
+      - "跨前端、后端、数据与基础设施完成端到端交付。"
+    permissions:
+      - "可修改运行时代码、测试、文档与配置。"
+    preferences:
+      - "保持模块边界清晰，公共能力优先抽象复用。"
+  前端开发:
+    title: "前端 / 客户端开发"
+    responsibilities:
+      - "页面、组件、状态管理、交互与客户端服务调用。"
+    permissions:
+      - "可修改客户端代码和对应测试。"
+    preferences:
+      - "复用统一组件与设计规范，避免业务页面重复实现公共能力。"
+  后端开发:
+    title: "后端开发"
+    responsibilities:
+      - "API、服务层、领域模型、数据访问、任务队列与日志。"
+    permissions:
+      - "可修改服务端代码、迁移、配置和对应测试。"
+    preferences:
+      - "接口契约清晰，核心流程有可追踪日志。"
+  测试专员:
+    title: "QA / 测试"
+    responsibilities:
+      - "功能验证、Bug 反馈、验收标准核查。"
+    permissions:
+      - "默认只读代码；允许 checkout PR 分支并更新测试标签。"
+    preferences:
+      - "测试通过前不合并；失败时创建或关联 Bug Issue。"
+
+common_constraints:
+  - "PR 目标分支为默认分支，通常是 `main`。"
+  - "可交付工作必须关联 Issue；PR 使用 `Fixes #编号` 或 `Refs #编号`。"
+  - "运行时行为变化需要测试；纯文档、规则、CI 配置可按项目规则直接合入。"
+  - "测试通过收口遵循：先 approve，再添加 `tested-pass`。"

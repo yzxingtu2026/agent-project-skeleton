@@ -1,0 +1,50 @@
+const fs = require("fs");
+const path = require("path");
+
+function createRepo(root) {
+  return {
+    root,
+    path(relativePath) {
+      return path.join(root, relativePath);
+    },
+    exists(relativePath) {
+      return fs.existsSync(path.join(root, relativePath));
+    },
+    readText(relativePath) {
+      return fs.readFileSync(path.join(root, relativePath), "utf8");
+    },
+    readJson(relativePath) {
+      return JSON.parse(this.readText(relativePath));
+    },
+    writeFile(relativePath, content) {
+      const absolute = path.join(root, relativePath);
+      fs.mkdirSync(path.dirname(absolute), { recursive: true });
+      fs.writeFileSync(absolute, content);
+    },
+    writeFileGuarded(relativePath, content, force) {
+      if (this.exists(relativePath) && !force) {
+        throw new Error(`${relativePath} already exists. Re-run init with --force to overwrite.`);
+      }
+      this.writeFile(relativePath, content);
+    },
+  };
+}
+
+function findRepoRoot(start) {
+  let current = start;
+  while (current !== path.dirname(current)) {
+    if (fs.existsSync(path.join(current, ".git"))) return current;
+    current = path.dirname(current);
+  }
+  return start;
+}
+
+function normalizeNewlines(value) {
+  return value.replace(/\r\n/g, "\n");
+}
+
+module.exports = {
+  createRepo,
+  findRepoRoot,
+  normalizeNewlines,
+};

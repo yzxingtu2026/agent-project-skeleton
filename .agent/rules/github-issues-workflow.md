@@ -1,8 +1,3 @@
----
-description: Issue/PR 工作流、测试标签、自动合并
-alwaysApply: false
----
-
 # GitHub Issue / PR 工作流
 
 ## Issue

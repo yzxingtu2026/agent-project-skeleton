@@ -1,7 +1,7 @@
 ## 仓库信息
 
-- **项目名称**：`<PROJECT_NAME>`
-- **GitHub 仓库**：`https://github.com/<OWNER>/<REPO>`
+- **项目名称**：`{{PROJECT_NAME}}`
+- **GitHub 仓库**：`{{GITHUB_REPOSITORY}}`
 - **默认分支**：`main`（建议受保护，仅接受 PR 合入）
 - **Issue/PR 规范/开发规范**：参见 `.agent/rules/main.md`
 

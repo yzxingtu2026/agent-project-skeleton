@@ -1,6 +1,7 @@
 const readline = require("readline");
+const path = require("path");
 const { DEFAULT_LANGUAGE, DEFAULT_ROLE, LOCAL_NOTICE } = require("./constants");
-const { configureGitAuthor, gitConfig } = require("./git");
+const { configureGitAuthor, gitConfig, gitRemoteUrl } = require("./git");
 const { renderTemplate } = require("./template");
 const { findTeamMember, renderCommonConstraints, renderRoleGuide } = require("./team");
 
@@ -52,7 +53,10 @@ async function collectInitProfile(repo, options) {
 }
 
 function writeLocalEntries(repo, profile, force) {
+  const repository = inferRepositoryInfo(repo);
   const replacements = {
+    PROJECT_NAME: repository.projectName,
+    GITHUB_REPOSITORY: repository.githubRepository,
     USER_NAME: profile.name,
     GITHUB_USERNAME: profile.githubUsername,
     GITHUB_EMAIL: profile.githubEmail,
@@ -64,6 +68,35 @@ function writeLocalEntries(repo, profile, force) {
   repo.writeFileGuarded("AGENTS.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/AGENTS.md.tpl", replacements), force);
   repo.writeFileGuarded("CLAUDE.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/CLAUDE.md.tpl", replacements), force);
   console.log("已生成 AGENTS.md 和 CLAUDE.md");
+}
+
+function inferRepositoryInfo(repo) {
+  const remoteUrl = gitRemoteUrl(repo, "origin");
+  const parsed = parseGitHubRemote(remoteUrl);
+  return {
+    projectName: parsed?.repo || path.basename(repo.root),
+    githubRepository: parsed?.url || remoteUrl || "https://github.com/<OWNER>/<REPO>",
+  };
+}
+
+function parseGitHubRemote(remoteUrl) {
+  if (!remoteUrl) return null;
+  const normalized = remoteUrl.trim();
+  const patterns = [
+    /^https:\/\/github\.com\/([^/]+)\/(.+?)(?:\.git)?$/,
+    /^git@github\.com:([^/]+)\/(.+?)(?:\.git)?$/,
+    /^ssh:\/\/git@github\.com\/([^/]+)\/(.+?)(?:\.git)?$/,
+  ];
+  for (const pattern of patterns) {
+    const match = pattern.exec(normalized);
+    if (!match) continue;
+    return {
+      owner: match[1],
+      repo: match[2],
+      url: `https://github.com/${match[1]}/${match[2]}`,
+    };
+  }
+  return null;
 }
 
 function applyMatchedMember(repo, profile, options, matchedMember) {
@@ -99,6 +132,8 @@ function inferGithubUsername(email) {
 
 module.exports = {
   collectInitProfile,
+  inferRepositoryInfo,
+  parseGitHubRemote,
   runInit,
   writeLocalEntries,
 };

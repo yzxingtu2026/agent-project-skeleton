@@ -19,7 +19,16 @@ function gitConfig(repo, key) {
   }
 }
 
+function gitRemoteUrl(repo, remote = "origin") {
+  try {
+    return execFileSync("git", ["remote", "get-url", remote], { cwd: repo.root, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+  } catch (error) {
+    return "";
+  }
+}
+
 module.exports = {
   configureGitAuthor,
   gitConfig,
+  gitRemoteUrl,
 };

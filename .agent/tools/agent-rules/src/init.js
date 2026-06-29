@@ -2,12 +2,15 @@ const readline = require("readline");
 const path = require("path");
 const { DEFAULT_LANGUAGE, DEFAULT_ROLE, LOCAL_NOTICE } = require("./constants");
 const { configureGitAuthor, gitConfig, gitRemoteUrl } = require("./git");
+const { renderAll } = require("./render");
 const { renderTemplate } = require("./template");
 const { findTeamMember, renderCommonConstraints, renderRoleGuide } = require("./team");
 
 async function runInit(repo, options) {
   const profile = await collectInitProfile(repo, options);
-  writeLocalEntries(repo, profile, Boolean(options.force));
+  const agents = await collectAgentVendors(options);
+  writeLocalEntries(repo, profile, agents, Boolean(options.force));
+  syncSelectedVendors(repo, agents);
   configureGitAuthor(repo, profile);
 }
 
@@ -42,6 +45,9 @@ async function collectInitProfile(repo, options) {
       profile.githubEmail = await promptMissing(rl, "GitHub 提交邮箱", profile.githubEmail);
       profile.role = await promptMissing(rl, "角色", profile.role);
       profile.language = await promptMissing(rl, "常用语言", profile.language);
+      if (!options.agents) {
+        options.agents = await promptMissing(rl, "Agent 厂商（可多选，逗号分隔）", "codex,claude");
+      }
     } finally {
       rl.close();
     }
@@ -52,7 +58,12 @@ async function collectInitProfile(repo, options) {
   return profile;
 }
 
-function writeLocalEntries(repo, profile, force) {
+async function collectAgentVendors(options) {
+  const raw = options.agents || "codex,claude";
+  return parseAgentVendors(raw);
+}
+
+function writeLocalEntries(repo, profile, agents, force) {
   const repository = inferRepositoryInfo(repo);
   const replacements = {
     PROJECT_NAME: repository.projectName,
@@ -65,9 +76,25 @@ function writeLocalEntries(repo, profile, force) {
     USER_ROLE_GUIDE: renderRoleGuide(repo, profile.role),
     ROLE_COMMON_CONSTRAINTS: renderCommonConstraints(repo),
   };
-  repo.writeFileGuarded("AGENTS.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/AGENTS.md.tpl", replacements), force);
-  repo.writeFileGuarded("CLAUDE.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/CLAUDE.md.tpl", replacements), force);
-  console.log("已生成 AGENTS.md 和 CLAUDE.md");
+  if (agents.has("codex")) {
+    repo.writeFileGuarded("AGENTS.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/AGENTS.md.tpl", replacements), force);
+    console.log("已生成 AGENTS.md");
+  }
+  if (agents.has("claude")) {
+    repo.writeFileGuarded("CLAUDE.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/CLAUDE.md.tpl", replacements), force);
+    console.log("已生成 CLAUDE.md");
+  }
+}
+
+function syncSelectedVendors(repo, agents) {
+  const syncTargets = new Set();
+  if (agents.has("cursor")) syncTargets.add("cursor");
+  if (agents.has("qoder")) syncTargets.add("qoder");
+  if (!syncTargets.size) return;
+  for (const output of renderAll(repo, syncTargets)) {
+    repo.writeFile(output.path, output.content);
+    console.log(`已生成 ${output.path}`);
+  }
 }
 
 function inferRepositoryInfo(repo) {
@@ -97,6 +124,29 @@ function parseGitHubRemote(remoteUrl) {
     };
   }
   return null;
+}
+
+function parseAgentVendors(raw) {
+  const supported = new Set(["codex", "claude", "cursor", "qoder"]);
+  const aliases = {
+    agents: "codex",
+    agent: "codex",
+    all: "all",
+    auto: "all",
+  };
+  const selected = String(raw)
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean)
+    .map((item) => aliases[item] || item);
+  const normalized = selected.includes("all") ? Array.from(supported) : selected;
+  const result = new Set();
+  for (const vendor of normalized) {
+    if (!supported.has(vendor)) throw new Error(`暂不支持 Agent 厂商：${vendor}。可选：codex, claude, cursor, qoder。`);
+    result.add(vendor);
+  }
+  if (!result.size) throw new Error("至少需要选择一个 Agent 厂商。");
+  return result;
 }
 
 function applyMatchedMember(repo, profile, options, matchedMember) {
@@ -131,9 +181,12 @@ function inferGithubUsername(email) {
 }
 
 module.exports = {
+  collectAgentVendors,
   collectInitProfile,
   inferRepositoryInfo,
+  parseAgentVendors,
   parseGitHubRemote,
   runInit,
+  syncSelectedVendors,
   writeLocalEntries,
 };

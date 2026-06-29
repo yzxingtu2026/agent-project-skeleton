@@ -30,7 +30,7 @@ docs/development/
 ## 建议初始化
 
 ```bash
-node .agent/tools/agent-rules/cli.js init
+node .agent/tools/agent-rules/cli.js init --agents=codex,claude,cursor,qoder
 node .agent/tools/agent-rules/cli.js sync
 git switch -c chore/initialize-project-rules
 ```

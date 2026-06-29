@@ -22,7 +22,7 @@ function getTargets(args) {
   const selected = raw.split(",").map((item) => item.trim()).filter(Boolean);
   const normalized = [];
   for (const target of selected) {
-    if (!supported.includes(target)) throw new Error(`Unsupported target for sync/doctor: ${target}. Use init for AGENTS.md/CLAUDE.md.`);
+    if (!supported.includes(target)) throw new Error(`当前命令暂不支持目标：${target}。AGENTS.md/CLAUDE.md 请使用 init 生成。`);
     normalized.push(target);
   }
   return new Set(normalized);
@@ -37,7 +37,7 @@ function isKnownCommand(command) {
 }
 
 function printHelp() {
-  console.log(`Usage:
+  console.log(`用法：
   node .agent/tools/agent-rules/cli.js init [--name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com]
   node .agent/tools/agent-rules/cli.js sync [--target=all|qoder,cursor]
   node .agent/tools/agent-rules/cli.js doctor [--target=all|qoder,cursor]`);

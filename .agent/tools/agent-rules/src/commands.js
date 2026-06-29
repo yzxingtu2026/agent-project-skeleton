@@ -4,7 +4,7 @@ const { renderAll } = require("./render");
 function runSync(repo, targets) {
   for (const output of renderAll(repo, targets)) {
     repo.writeFile(output.path, output.content);
-    console.log(`synced ${output.path}`);
+    console.log(`已生成 ${output.path}`);
   }
 }
 
@@ -22,12 +22,18 @@ function runDoctor(repo, targets) {
   }
 
   if (stale.length) {
-    console.error("agent-rules doctor found stale generated files:");
-    for (const item of stale) console.error(`- ${item.path}: ${item.reason}`);
-    console.error("Run: node .agent/tools/agent-rules/cli.js sync");
+    console.error("生成物检查发现不一致：");
+    for (const item of stale) console.error(`- ${item.path}: ${formatStaleReason(item.reason)}`);
+    console.error("请运行：node .agent/tools/agent-rules/cli.js sync");
     process.exit(1);
   }
-  console.log("agent-rules doctor passed");
+  console.log("生成物检查通过");
+}
+
+function formatStaleReason(reason) {
+  if (reason === "missing") return "文件缺失";
+  if (reason === "outdated") return "内容已过期";
+  return reason;
 }
 
 module.exports = {

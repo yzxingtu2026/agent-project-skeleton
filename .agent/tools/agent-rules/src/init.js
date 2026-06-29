@@ -63,7 +63,7 @@ function writeLocalEntries(repo, profile, force) {
   };
   repo.writeFileGuarded("AGENTS.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/AGENTS.md.tpl", replacements), force);
   repo.writeFileGuarded("CLAUDE.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/CLAUDE.md.tpl", replacements), force);
-  console.log("initialized AGENTS.md and CLAUDE.md");
+  console.log("已生成 AGENTS.md 和 CLAUDE.md");
 }
 
 function applyMatchedMember(repo, profile, options, matchedMember) {
@@ -80,7 +80,7 @@ function validateProfile(profile) {
   if (!profile.githubUsername) missing.push("--github-user");
   if (!profile.githubEmail) missing.push("--github-email");
   if (missing.length) {
-    throw new Error(`Missing required init options: ${missing.join(", ")}. Example: node .agent/tools/agent-rules/cli.js init --name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com`);
+    throw new Error(`缺少 init 必填参数：${missing.join(", ")}。示例：node .agent/tools/agent-rules/cli.js init --name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com`);
   }
 }
 

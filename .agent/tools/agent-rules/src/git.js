@@ -5,9 +5,9 @@ function configureGitAuthor(repo, profile) {
     execFileSync("git", ["config", "user.name", profile.name], { cwd: repo.root, stdio: "ignore" });
     execFileSync("git", ["config", "user.email", profile.githubEmail], { cwd: repo.root, stdio: "ignore" });
     execFileSync("git", ["config", "github.user", profile.githubUsername], { cwd: repo.root, stdio: "ignore" });
-    console.log("configured local git user.name, user.email and github.user");
+    console.log("已配置当前仓库的 git user.name、user.email 和 github.user");
   } catch (error) {
-    console.warn("warning: failed to configure local git identity; please run git config manually");
+    console.warn("警告：未能配置当前仓库的 Git 身份，请手动运行 git config。");
   }
 }
 

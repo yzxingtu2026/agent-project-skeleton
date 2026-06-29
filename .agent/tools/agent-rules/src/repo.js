@@ -23,7 +23,7 @@ function createRepo(root) {
     },
     writeFileGuarded(relativePath, content, force) {
       if (this.exists(relativePath) && !force) {
-        throw new Error(`${relativePath} already exists. Re-run init with --force to overwrite.`);
+        throw new Error(`${relativePath} 已存在。如需覆盖，请重新运行 init 并加上 --force。`);
       }
       this.writeFile(relativePath, content);
     },

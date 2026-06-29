@@ -13,7 +13,7 @@ function readSimpleYaml(repo, relativePath) {
       while (stack.length > 1 && indent < stack[stack.length - 1].indent) stack.pop();
       const current = stack[stack.length - 1];
       if (!Array.isArray(current.value)) {
-        if (!current.parent || !current.key) throw new Error(`${relativePath}: list item has no parent key`);
+        if (!current.parent || !current.key) throw new Error(`${relativePath}: 列表项缺少父级字段`);
         current.parent[current.key] = [];
         current.value = current.parent[current.key];
       }

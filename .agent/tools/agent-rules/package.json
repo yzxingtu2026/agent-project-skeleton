@@ -1,7 +1,7 @@
 {
   "name": "@yzxingtu/agent-rules",
   "version": "0.0.0",
-  "description": "Sync shared AI agent rules and skills into vendor-specific rule directories.",
+  "description": "将团队 AI Agent 规则和技能同步到各厂商规则目录。",
   "main": "./src/cli.js",
   "bin": {
     "agent-rules": "./cli.js"

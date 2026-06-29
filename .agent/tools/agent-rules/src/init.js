@@ -76,10 +76,8 @@ function writeLocalEntries(repo, profile, agents, force) {
     USER_ROLE_GUIDE: renderRoleGuide(repo, profile.role),
     ROLE_COMMON_CONSTRAINTS: renderCommonConstraints(repo),
   };
-  if (agents.has("codex")) {
-    repo.writeFileGuarded("AGENTS.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/AGENTS.md.tpl", replacements), force);
-    console.log("已生成 AGENTS.md");
-  }
+  repo.writeFileGuarded("AGENTS.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/AGENTS.md.tpl", replacements), force);
+  console.log("已生成 AGENTS.md");
   if (agents.has("claude")) {
     repo.writeFileGuarded("CLAUDE.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/CLAUDE.md.tpl", replacements), force);
     console.log("已生成 CLAUDE.md");

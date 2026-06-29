@@ -35,4 +35,4 @@ node .agent/tools/agent-rules/cli.js sync
 git switch -c chore/initialize-project-rules
 ```
 
-`init` 会优先按 GitHub 用户名或提交邮箱匹配 `.agent/team/members.yml`，再从 `.agent/team/roles.yml` 写入对应角色说明。`AGENTS.md` / `CLAUDE.md` 包含个人身份和本地协作偏好，已放入 `.gitignore`，不要提交到仓库。
+`init` 会优先按 GitHub 用户名或提交邮箱匹配 `.agent/team/members.yml`，再从 `.agent/team/roles.yml` 写入对应角色说明。`AGENTS.md` 每次都会生成；`CLAUDE.md` 和厂商目录按 `--agents` 选择生成。这些本地文件包含个人身份和协作偏好，已放入 `.gitignore`，不要提交到仓库。

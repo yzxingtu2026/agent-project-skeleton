@@ -19,7 +19,7 @@ node .agent/tools/agent-rules/cli.js sync
 node .agent/tools/agent-rules/cli.js doctor
 ```
 
-`init` 可通过 `--agents=codex,claude,cursor,qoder` 选择要初始化的 Agent 厂商；默认生成 `AGENTS.md` 和 `CLAUDE.md`。选择 `cursor` 或 `qoder` 时，会同步生成对应厂商目录。
+`init` 每次都会生成通用主引导 `AGENTS.md`，可通过 `--agents=codex,claude,cursor,qoder` 选择额外初始化的 Agent 厂商；默认额外生成 `CLAUDE.md`。选择 `cursor` 或 `qoder` 时，会同步生成对应厂商目录。
 
 可通过 `--target` 限定目标：
 

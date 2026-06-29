@@ -5,9 +5,9 @@
 ## 使用方式
 
 1. 从本仓库创建新项目：点击 GitHub 的 **Use this template**。
-2. 运行 `agent-rules init`，填写当前使用者姓名、GitHub 用户名和提交邮箱。
+2. 运行 `npx -y @yz-xingtu/agent-rules@latest init`，填写当前使用者姓名、GitHub 用户名和提交邮箱。
 3. 替换规则源中的占位符：项目名称、仓库地址、默认分支、团队沟通渠道、运行时目录、技术栈和开发硬约束。
-4. 按项目情况调整 `.agent/rules/`、`.agent/skills/`、`.agent/team/`，再运行 `agent-rules sync`。
+4. 按项目情况调整 `.agent/rules/`、`.agent/skills/`、`.agent/team/`，再运行 `npx -y @yz-xingtu/agent-rules@latest sync`。
 5. 查看本地生成的 `AGENTS.md` / `CLAUDE.md`，确认项目上下文和使用者信息。
 6. 新增通用封装、统一组件、公共工具或跨模块约定时，同步记录到规则源或 `docs/development/`。
 
@@ -30,8 +30,8 @@ docs/development/
 ## 建议初始化
 
 ```bash
-agent-rules init --agents=codex,claude,cursor,qoder
-agent-rules sync
+npx -y @yz-xingtu/agent-rules@latest init --agents=codex,claude,cursor,qoder
+npx -y @yz-xingtu/agent-rules@latest sync
 git switch -c chore/initialize-project-rules
 ```
 

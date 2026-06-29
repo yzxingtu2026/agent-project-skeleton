@@ -14,9 +14,9 @@
 ## 命令
 
 ```bash
-agent-rules init
-agent-rules sync
-agent-rules doctor
+npx -y @yz-xingtu/agent-rules@latest init
+npx -y @yz-xingtu/agent-rules@latest sync
+npx -y @yz-xingtu/agent-rules@latest doctor
 ```
 
 `init` 每次都会生成通用主引导 `AGENTS.md`，可通过 `--agents=codex,claude,cursor,qoder` 选择额外初始化的 Agent 厂商；默认额外生成 `CLAUDE.md`。选择 `cursor` 或 `qoder` 时，会同步生成对应厂商目录。
@@ -24,7 +24,7 @@ agent-rules doctor
 `sync` 会刷新本地 `AGENTS.md` 和已存在的 `CLAUDE.md`，再同步厂商目录。`sync` / `doctor` 默认只处理当前仓库已存在的厂商目录，例如 `.qoder/` 或 `.cursor/`。如果没有任何厂商目录，需要显式指定目标：
 
 ```bash
-agent-rules sync --target=cursor,qoder
+npx -y @yz-xingtu/agent-rules@latest sync --target=cursor,qoder
 ```
 
 ## 维护原则

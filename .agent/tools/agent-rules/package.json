@@ -1,6 +1,6 @@
 {
   "name": "@yz-xingtu/agent-rules",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "将团队 AI Agent 规则和技能同步到各厂商规则目录。",
   "main": "./src/cli.js",
   "bin": {
@@ -10,11 +10,15 @@
     "check": "node --check cli.js && node --check src/cli.js && node --check src/commands.js && node --check src/init.js && node --check src/local-entries.js && node --check src/render.js"
   },
   "files": [
+    "README.md",
     "cli.js",
     "src"
   ],
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "license": "UNLICENSED"
 }

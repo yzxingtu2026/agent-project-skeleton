@@ -1,7 +1,7 @@
 const { getTargets, isHelpCommand, isKnownCommand, parseOptions, printHelp } = require("./args");
 const { runDoctor, runSync } = require("./commands");
 const { runInit } = require("./init");
-const { createRepo, findRepoRoot } = require("./repo");
+const { createRepo, ensureAgentWorkspace, findRepoRoot } = require("./repo");
 const { validateSources } = require("./validate");
 
 async function runCli(argv) {
@@ -13,6 +13,7 @@ async function runCli(argv) {
 
   const args = argv.slice(3);
   const repo = createRepo(findRepoRoot(process.cwd()));
+  ensureAgentWorkspace(repo);
   validateSources(repo);
 
   if (command === "init") {

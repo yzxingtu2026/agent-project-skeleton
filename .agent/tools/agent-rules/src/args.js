@@ -38,9 +38,11 @@ function isKnownCommand(command) {
 
 function printHelp() {
   console.log(`用法：
-  node .agent/tools/agent-rules/cli.js init [--agents=codex,claude,cursor,qoder --name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com]
-  node .agent/tools/agent-rules/cli.js sync [--target=all|qoder,cursor]
-  node .agent/tools/agent-rules/cli.js doctor [--target=all|qoder,cursor]`);
+  agent-rules init [--agents=codex,claude,cursor,qoder --name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com]
+  agent-rules sync [--target=all|qoder,cursor]
+  agent-rules doctor [--target=all|qoder,cursor]
+
+本地开发可用：node .agent/tools/agent-rules/cli.js <命令>`);
 }
 
 function toCamelCase(value) {

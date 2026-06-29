@@ -24,7 +24,7 @@ function runDoctor(repo, targets) {
   if (stale.length) {
     console.error("生成物检查发现不一致：");
     for (const item of stale) console.error(`- ${item.path}: ${formatStaleReason(item.reason)}`);
-    console.error("请运行：node .agent/tools/agent-rules/cli.js sync");
+    console.error("请运行：agent-rules sync");
     process.exit(1);
   }
   console.log("生成物检查通过");

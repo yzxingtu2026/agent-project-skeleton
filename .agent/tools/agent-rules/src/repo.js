@@ -30,6 +30,11 @@ function createRepo(root) {
   };
 }
 
+function ensureAgentWorkspace(repo) {
+  if (repo.exists(".agent")) return;
+  throw new Error(`当前仓库缺少 .agent 目录：${repo.path(".agent")}。请在使用本模板初始化后的仓库根目录运行 agent-rules。`);
+}
+
 function findRepoRoot(start) {
   let current = start;
   while (current !== path.dirname(current)) {
@@ -45,6 +50,7 @@ function normalizeNewlines(value) {
 
 module.exports = {
   createRepo,
+  ensureAgentWorkspace,
   findRepoRoot,
   normalizeNewlines,
 };

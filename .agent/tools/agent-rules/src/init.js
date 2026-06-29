@@ -161,7 +161,7 @@ function validateProfile(profile) {
   if (!profile.githubUsername) missing.push("--github-user");
   if (!profile.githubEmail) missing.push("--github-email");
   if (missing.length) {
-    throw new Error(`缺少 init 必填参数：${missing.join(", ")}。示例：node .agent/tools/agent-rules/cli.js init --name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com`);
+    throw new Error(`缺少 init 必填参数：${missing.join(", ")}。示例：agent-rules init --name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com`);
   }
 }
 

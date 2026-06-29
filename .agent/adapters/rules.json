@@ -1,0 +1,93 @@
+{
+  "rules": [
+    {
+      "id": "main",
+      "source": ".agent/rules/main.md",
+      "qoder": {
+        "path": ".qoder/rules/main.md",
+        "frontmatter": {
+          "trigger": "always_on"
+        }
+      },
+      "cursor": {
+        "path": ".cursor/rules/main.mdc",
+        "frontmatter": {
+          "description": "团队协作与开发硬约束（通用项目）",
+          "alwaysApply": true
+        }
+      }
+    },
+    {
+      "id": "branching-strategy",
+      "source": ".agent/rules/branching-strategy.md",
+      "qoder": {
+        "path": ".qoder/rules/branching-strategy.md",
+        "frontmatter": {
+          "trigger": "model_decision",
+          "description": "切分支、合并、处理 hotfix"
+        }
+      },
+      "cursor": {
+        "path": ".cursor/rules/branching-strategy.mdc",
+        "frontmatter": {
+          "description": "分支命名、主干保护、短期任务分支",
+          "alwaysApply": false
+        }
+      }
+    },
+    {
+      "id": "github-issues-workflow",
+      "source": ".agent/rules/github-issues-workflow.md",
+      "qoder": {
+        "path": ".qoder/rules/github-issues-workflow.md",
+        "frontmatter": {
+          "trigger": "model_decision",
+          "description": "创建/编辑 Issue、开 PR、查看 CI"
+        }
+      },
+      "cursor": {
+        "path": ".cursor/rules/github-issues-workflow.mdc",
+        "frontmatter": {
+          "description": "Issue/PR 工作流、测试标签、自动合并",
+          "alwaysApply": false
+        }
+      }
+    },
+    {
+      "id": "project-context-and-docs",
+      "source": ".agent/rules/project-context-and-docs.md",
+      "qoder": {
+        "path": ".qoder/rules/project-context-and-docs.md",
+        "frontmatter": {
+          "trigger": "model_decision",
+          "description": "新增/修改文档、开始新模块前"
+        }
+      },
+      "cursor": {
+        "path": ".cursor/rules/project-context-and-docs.mdc",
+        "frontmatter": {
+          "description": "项目背景、文档位置、规范沉淀",
+          "alwaysApply": false
+        }
+      }
+    },
+    {
+      "id": "team-escalation",
+      "source": ".agent/rules/team-escalation.md",
+      "qoder": {
+        "path": ".qoder/rules/team-escalation.md",
+        "frontmatter": {
+          "trigger": "model_decision",
+          "description": "无法自主决策时的团队求助规则"
+        }
+      },
+      "cursor": {
+        "path": ".cursor/rules/team-escalation.mdc",
+        "frontmatter": {
+          "description": "无法自主决策时的团队求助规则",
+          "alwaysApply": false
+        }
+      }
+    }
+  ]
+}

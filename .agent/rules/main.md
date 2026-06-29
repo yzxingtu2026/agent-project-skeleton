@@ -1,7 +1,3 @@
----
-trigger: always_on
----
-
 # 团队协作主规则
 
 ## 必守原则
@@ -9,9 +5,10 @@ trigger: always_on
 1. **先 Issue 后代码**：所有可交付工作必须关联 GitHub Issue；范围、AC、结论以 Issue/PR 为准。
 2. **禁止直改 main**：从最新 `main` 按 Issue 开短分支，PR 合入，禁止直接提交或推送 `main`。
 3. **小范围交付**：一条分支只解决一个聚焦任务；超出范围时拆 Issue，不静默扩展。
-4. **文档归位**：人工文档放 `docs/`；规则/规范变化要随代码或 PR 同步沉淀。
+4. **文档归位**：文档放 `docs/`；规则/规范变化要随代码或 PR 同步沉淀。
 5. **远端操作用 gh**：Issue、PR、CI、Release 优先用 GitHub CLI；不得把 token 写入仓库。
 6. **中文提交**：提交信息使用中文，说明关联 Issue 和变更目的。
+7. **团队信息源**：需要成员、角色、GitHub 邮箱或钉钉 ID 时，查询 `.agent/team/members.yml`。
 
 ## 开发硬约束
 
@@ -23,7 +20,7 @@ trigger: always_on
 
 ## 关联规则
 
-- Issue/PR/测试标签：[`github-issues-workflow`](./github-issues-workflow.md)
-- 分支策略：[`branching-strategy`](./branching-strategy.md)
-- 文档与规范沉淀：[`project-context-and-docs`](./project-context-and-docs.md)
-- 无法决策求助：[`team-escalation`](./team-escalation.md)
+- Issue/PR/测试标签：`github-issues-workflow`
+- 分支策略：`branching-strategy`
+- 文档与规范沉淀：`project-context-and-docs`
+- 无法决策求助：`team-escalation`

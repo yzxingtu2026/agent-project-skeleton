@@ -1,8 +1,3 @@
----
-trigger: model_decision
-description: 新增/修改文档、开始新模块前
----
-
 # 项目背景与文档规范
 
 ## 开发前
@@ -19,5 +14,5 @@ description: 新增/修改文档、开始新模块前
 ## 公共规范沉淀
 
 - 新增或调整通用封装、统一组件、公共工具、跨模块约定时，必须同步记录。
-- 面向开发者的规范优先写入 `docs/development/`；会影响 Agent 行为的硬约束同步写入 `.cursor/rules/` 与 `.qoder/rules/`。
+- 面向开发者的规范优先写入 `docs/development/`；会影响 Agent 行为的硬约束同步写入生成规则。
 - PR/Issue 中要说明新增规范的位置和适用范围。

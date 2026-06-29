@@ -6,4 +6,4 @@
 - 跨模块约定、目录边界、命名规范。
 - 运行、测试、发布、观测等工程实践。
 
-新增或调整公共能力时，请同步更新本目录或 `.cursor/rules/`、`.qoder/rules/`，并在 Issue/PR 中说明规范位置。
+新增或调整公共能力时，请同步更新本目录或 `.agent/rules/`、`.agent/skills/`、`.agent/team/`，运行 `agent-rules sync`，并在 Issue/PR 中说明规范位置。

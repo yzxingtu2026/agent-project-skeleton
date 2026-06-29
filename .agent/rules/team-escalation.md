@@ -1,8 +1,3 @@
----
-trigger: model_decision
-description: 无法自主决策时的团队求助规则
----
-
 # 团队求助规则
 
 ## 何时求助

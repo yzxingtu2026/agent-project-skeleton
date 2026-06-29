@@ -1,8 +1,3 @@
----
-description: 分支命名、主干保护、短期任务分支
-alwaysApply: false
----
-
 # 分支策略
 
 - `main` 是受保护主干，只接受 PR 合入，禁止直接提交或推送。

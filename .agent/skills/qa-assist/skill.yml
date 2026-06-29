@@ -1,0 +1,8 @@
+id: qa-assist
+name: QA Assist
+description: 辅助非技术测试人员完成通用项目的 PR 验收测试：识别 needs-testing PR、读取关联 Issue/PR/README/docs 推导测试入口和验收步骤、指导测试人员按项目说明运行或访问待测版本、在原 PR 反馈结果，并按项目规则更新 tested-pass/tested-fail 等测试标签。
+targets:
+  qoder: true
+  codex: true
+  claude: command
+  cursor: rule

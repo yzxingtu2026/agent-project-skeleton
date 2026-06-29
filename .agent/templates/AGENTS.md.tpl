@@ -3,7 +3,7 @@
 - **项目名称**：`<PROJECT_NAME>`
 - **GitHub 仓库**：`https://github.com/<OWNER>/<REPO>`
 - **默认分支**：`main`（建议受保护，仅接受 PR 合入）
-- **Issue/PR 规范/开发规范**：参见 `AGENTS.md`、`.cursor/rules/*` 或 `.qoder/rules/*`
+- **Issue/PR 规范/开发规范**：参见 `.agent/rules/main.md`
 
 ## 启动规范
 
@@ -12,7 +12,6 @@
 - 需要提交时，优先使用「当前使用者」中的姓名和 GitHub 提交邮箱配置本仓库 Git author。
 - 若任务涉及新通用封装、统一组件、公共工具或跨模块约定，交付时必须同步沉淀规范。
 - 需要查团队成员、GitHub 邮箱、钉钉 ID 或角色时，读取 `.agent/team/members.yml` 和 `.agent/team/roles.yml`。
-- 规则/技能由 `.agent/tools/agent-rules` 从元结构生成；需要调整规则时先改 `.agent/rules/`、`.agent/skills/`、`.agent/team/` 或模板，再运行 `node .agent/tools/agent-rules/cli.js sync`。
 
 ## 当前使用者
 
@@ -26,6 +25,6 @@
 
 {{USER_ROLE_GUIDE}}
 
-## 角色通用约束
+## 约束
 
 {{ROLE_COMMON_CONSTRAINTS}}

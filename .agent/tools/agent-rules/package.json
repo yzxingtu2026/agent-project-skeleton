@@ -4,7 +4,7 @@
   "description": "将团队 AI Agent 规则和技能同步到各厂商规则目录。",
   "main": "./src/cli.js",
   "bin": {
-    "agent-rules": "./cli.js"
+    "agent-rules": "cli.js"
   },
   "scripts": {
     "check": "node --check cli.js && node --check src/cli.js && node --check src/commands.js && node --check src/init.js && node --check src/local-entries.js && node --check src/render.js"

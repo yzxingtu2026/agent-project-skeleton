@@ -1,7 +1,9 @@
 const { normalizeNewlines } = require("./repo");
+const { refreshLocalEntries } = require("./local-entries");
 const { renderAll } = require("./render");
 
 function runSync(repo, targets) {
+  refreshLocalEntries(repo);
   for (const output of renderAll(repo, targets)) {
     repo.writeFile(output.path, output.content);
     console.log(`已生成 ${output.path}`);

@@ -7,7 +7,7 @@
     "agent-rules": "./cli.js"
   },
   "scripts": {
-    "check": "node --check cli.js && node --check src/cli.js && node --check src/commands.js && node --check src/init.js && node --check src/render.js"
+    "check": "node --check cli.js && node --check src/cli.js && node --check src/commands.js && node --check src/init.js && node --check src/local-entries.js && node --check src/render.js"
   },
   "files": [
     "cli.js",

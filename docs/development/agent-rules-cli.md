@@ -21,7 +21,7 @@ agent-rules doctor
 
 `init` 每次都会生成通用主引导 `AGENTS.md`，可通过 `--agents=codex,claude,cursor,qoder` 选择额外初始化的 Agent 厂商；默认额外生成 `CLAUDE.md`。选择 `cursor` 或 `qoder` 时，会同步生成对应厂商目录。
 
-`sync` / `doctor` 默认只处理当前仓库已存在的厂商目录，例如 `.qoder/` 或 `.cursor/`。如果没有任何厂商目录，需要显式指定目标：
+`sync` 会刷新本地 `AGENTS.md` 和已存在的 `CLAUDE.md`，再同步厂商目录。`sync` / `doctor` 默认只处理当前仓库已存在的厂商目录，例如 `.qoder/` 或 `.cursor/`。如果没有任何厂商目录，需要显式指定目标：
 
 ```bash
 agent-rules sync --target=cursor,qoder
@@ -32,7 +32,7 @@ agent-rules sync --target=cursor,qoder
 - 修改规则时先改 `.agent/rules/`，再运行 `sync`。
 - 修改技能时先改 `.agent/skills/`，再运行 `sync`。
 - 修改团队成员和提交邮箱时先改 `.agent/team/members.yml`，再运行 `sync`。
-- 首次使用或更换操作者时运行 `init`，生成本地 `AGENTS.md` / `CLAUDE.md` 并配置本仓库 Git author。
+- 首次使用或更换操作者时运行 `init`，生成本地 `AGENTS.md` / `CLAUDE.md` 并配置本仓库 Git author；规则更新后运行 `sync` 刷新本地入口文件。
 - `init` 会优先按 GitHub 用户名或提交邮箱匹配 `.agent/team/members.yml`，再从 `.agent/team/roles.yml` 写入对应角色说明。
 - `.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商目录是本地生成物，已加入 `.gitignore`，不要长期手工维护或提交。
 - 生成文件顶部带中文生成标记。

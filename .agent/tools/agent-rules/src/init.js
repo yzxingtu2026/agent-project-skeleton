@@ -1,10 +1,9 @@
 const readline = require("readline");
-const path = require("path");
-const { DEFAULT_LANGUAGE, DEFAULT_ROLE, LOCAL_NOTICE } = require("./constants");
-const { configureGitAuthor, gitConfig, gitRemoteUrl } = require("./git");
+const { DEFAULT_LANGUAGE, DEFAULT_ROLE } = require("./constants");
+const { configureGitAuthor, gitConfig } = require("./git");
+const { writeLocalEntries } = require("./local-entries");
 const { renderAll } = require("./render");
-const { renderTemplate } = require("./template");
-const { findTeamMember, renderCommonConstraints, renderRoleGuide } = require("./team");
+const { findTeamMember } = require("./team");
 
 async function runInit(repo, options) {
   const profile = await collectInitProfile(repo, options);
@@ -63,27 +62,6 @@ async function collectAgentVendors(options) {
   return parseAgentVendors(raw);
 }
 
-function writeLocalEntries(repo, profile, agents, force) {
-  const repository = inferRepositoryInfo(repo);
-  const replacements = {
-    PROJECT_NAME: repository.projectName,
-    GITHUB_REPOSITORY: repository.githubRepository,
-    USER_NAME: profile.name,
-    GITHUB_USERNAME: profile.githubUsername,
-    GITHUB_EMAIL: profile.githubEmail,
-    USER_ROLE: profile.role,
-    USER_LANGUAGE: profile.language,
-    USER_ROLE_GUIDE: renderRoleGuide(repo, profile.role),
-    ROLE_COMMON_CONSTRAINTS: renderCommonConstraints(repo),
-  };
-  repo.writeFileGuarded("AGENTS.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/AGENTS.md.tpl", replacements), force);
-  console.log("已生成 AGENTS.md");
-  if (agents.has("claude")) {
-    repo.writeFileGuarded("CLAUDE.md", LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/CLAUDE.md.tpl", replacements), force);
-    console.log("已生成 CLAUDE.md");
-  }
-}
-
 function syncSelectedVendors(repo, agents) {
   const syncTargets = new Set();
   if (agents.has("cursor")) syncTargets.add("cursor");
@@ -93,35 +71,6 @@ function syncSelectedVendors(repo, agents) {
     repo.writeFile(output.path, output.content);
     console.log(`已生成 ${output.path}`);
   }
-}
-
-function inferRepositoryInfo(repo) {
-  const remoteUrl = gitRemoteUrl(repo, "origin");
-  const parsed = parseGitHubRemote(remoteUrl);
-  return {
-    projectName: parsed?.repo || path.basename(repo.root),
-    githubRepository: parsed?.url || remoteUrl || "https://github.com/<OWNER>/<REPO>",
-  };
-}
-
-function parseGitHubRemote(remoteUrl) {
-  if (!remoteUrl) return null;
-  const normalized = remoteUrl.trim();
-  const patterns = [
-    /^https:\/\/github\.com\/([^/]+)\/(.+?)(?:\.git)?$/,
-    /^git@github\.com:([^/]+)\/(.+?)(?:\.git)?$/,
-    /^ssh:\/\/git@github\.com\/([^/]+)\/(.+?)(?:\.git)?$/,
-  ];
-  for (const pattern of patterns) {
-    const match = pattern.exec(normalized);
-    if (!match) continue;
-    return {
-      owner: match[1],
-      repo: match[2],
-      url: `https://github.com/${match[1]}/${match[2]}`,
-    };
-  }
-  return null;
 }
 
 function parseAgentVendors(raw) {
@@ -181,10 +130,7 @@ function inferGithubUsername(email) {
 module.exports = {
   collectAgentVendors,
   collectInitProfile,
-  inferRepositoryInfo,
   parseAgentVendors,
-  parseGitHubRemote,
   runInit,
   syncSelectedVendors,
-  writeLocalEntries,
 };

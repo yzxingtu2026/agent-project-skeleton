@@ -20,7 +20,7 @@
 - `.agent/team/members.yml` 维护成员身份；`.agent/team/roles.yml` 维护角色说明，`init` 会按 GitHub 信息匹配并写入本地入口文件。
 - `.cursor/rules/*`、`.qoder/rules/*`、`.qoder/skills/*` 由 `.agent/tools/agent-rules` 本地生成，并通过 `.gitignore` 排除。
 - 首次使用或更换操作者时运行 `agent-rules init`。
-- 生成物过期时运行 `agent-rules sync`，提交前可运行 `agent-rules doctor`。
+- 生成物过期时运行 `agent-rules sync`，提交前可运行 `agent-rules doctor`；默认只同步当前已存在的厂商目录。
 - 面向团队开发者的长说明写入 `docs/development/`。
 - 会直接影响 Agent 行为的硬约束写入 `.agent/rules/`。
 - 新增公共封装、统一组件、公共工具或跨模块约定时，必须同步沉淀规范。

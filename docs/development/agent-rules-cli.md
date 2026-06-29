@@ -21,7 +21,7 @@ agent-rules doctor
 
 `init` 每次都会生成通用主引导 `AGENTS.md`，可通过 `--agents=codex,claude,cursor,qoder` 选择额外初始化的 Agent 厂商；默认额外生成 `CLAUDE.md`。选择 `cursor` 或 `qoder` 时，会同步生成对应厂商目录。
 
-可通过 `--target` 限定目标：
+`sync` / `doctor` 默认只处理当前仓库已存在的厂商目录，例如 `.qoder/` 或 `.cursor/`。如果没有任何厂商目录，需要显式指定目标：
 
 ```bash
 agent-rules sync --target=cursor,qoder

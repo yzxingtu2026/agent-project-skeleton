@@ -14,9 +14,11 @@ function parseOptions(args) {
   return options;
 }
 
-function getTargets(args) {
+function getTargets(args, repo) {
   const targetArg = args.find((arg) => arg.startsWith("--target="));
-  const raw = targetArg ? targetArg.slice("--target=".length) : "all";
+  if (!targetArg) return inferExistingTargets(repo);
+
+  const raw = targetArg.slice("--target=".length);
   const supported = ["qoder", "cursor"];
   if (raw === "all" || raw === "auto") return new Set(["qoder", "cursor"]);
   const selected = raw.split(",").map((item) => item.trim()).filter(Boolean);
@@ -26,6 +28,14 @@ function getTargets(args) {
     normalized.push(target);
   }
   return new Set(normalized);
+}
+
+function inferExistingTargets(repo) {
+  const targets = new Set();
+  if (repo.exists(".qoder")) targets.add("qoder");
+  if (repo.exists(".cursor")) targets.add("cursor");
+  if (targets.size) return targets;
+  throw new Error("未发现已初始化的厂商目录。请先运行 init 选择厂商，或显式指定参数：agent-rules sync --target=qoder,cursor");
 }
 
 function isHelpCommand(command) {
@@ -39,8 +49,8 @@ function isKnownCommand(command) {
 function printHelp() {
   console.log(`用法：
   agent-rules init [--agents=codex,claude,cursor,qoder --name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com]
-  agent-rules sync [--target=all|qoder,cursor]
-  agent-rules doctor [--target=all|qoder,cursor]
+  agent-rules sync [--target=qoder,cursor|all]
+  agent-rules doctor [--target=qoder,cursor|all]
 
 本地开发可用：node .agent/tools/agent-rules/cli.js <命令>`);
 }
@@ -51,6 +61,7 @@ function toCamelCase(value) {
 
 module.exports = {
   getTargets,
+  inferExistingTargets,
   isHelpCommand,
   isKnownCommand,
   parseOptions,

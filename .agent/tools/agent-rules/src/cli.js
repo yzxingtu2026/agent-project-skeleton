@@ -21,7 +21,7 @@ async function runCli(argv) {
     return;
   }
 
-  const targets = getTargets(args);
+  const targets = getTargets(args, repo);
   if (command === "sync") runSync(repo, targets);
   if (command === "doctor") runDoctor(repo, targets);
 }

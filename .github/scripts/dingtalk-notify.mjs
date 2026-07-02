@@ -252,8 +252,8 @@ function actionText(eventName, action, payload) {
       assigned: "分配了 PR",
       closed: payload.pull_request?.merged ? "合并了 PR" : "关闭了 PR",
       reopened: "重新打开了 PR",
-      ready_for_review: "标记 PR 为可 Review",
-      review_requested: "请求 PR Review",
+      ready_for_review: "标记 PR 为可审核",
+      review_requested: "请求 PR 审核",
       milestoned: "设置了 PR 里程碑",
       demilestoned: "移除了 PR 里程碑",
     }[action] ?? `PR ${action}`;
@@ -262,7 +262,7 @@ function actionText(eventName, action, payload) {
     return isPullRequestIssue(payload.issue) ? "新增了 PR 评论" : "新增了 Issue 评论";
   }
   if (eventName === "pull_request_review") {
-    return "提交了 PR Review";
+    return "提交了 PR 审核";
   }
   if (eventName === "pull_request_review_comment") {
     return "新增了 PR 行评论";
@@ -276,7 +276,7 @@ function titleForEvent(eventName, action, payload) {
   }
   if (eventName === "pull_request") {
     if (action === "review_requested") {
-      return "GitHub PR Review 请求";
+      return "GitHub PR 审核请求";
     }
     return action === "assigned" ? "GitHub PR 分配" : "GitHub PR 通知";
   }
@@ -284,7 +284,7 @@ function titleForEvent(eventName, action, payload) {
     return isPullRequestIssue(payload.issue) ? "GitHub PR 评论" : "GitHub Issue 评论";
   }
   if (eventName === "pull_request_review") {
-    return "GitHub PR Review";
+    return "GitHub PR 审核请求";
   }
   if (eventName === "pull_request_review_comment") {
     return "GitHub PR 行评论";
@@ -372,7 +372,7 @@ function buildMessage({ config, membersConfig, eventName, payload }) {
   }
 
   if (payload.review?.state) {
-    lines.push(`Review 状态：${markdownEscape(payload.review.state)}`);
+    lines.push(`审核状态：${markdownEscape(payload.review.state)}`);
   }
 
   const commentBody = payload.comment?.body ?? payload.review?.body;

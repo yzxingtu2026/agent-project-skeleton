@@ -12,21 +12,10 @@ events:
   issues:
     actions:
       - assigned
-      - opened
-      - closed
-      - reopened
-      - milestoned
-      - demilestoned
   pull_request:
     actions:
       - assigned
-      - opened
-      - closed
-      - reopened
-      - ready_for_review
       - review_requested
-      - milestoned
-      - demilestoned
   issue_comment:
     actions:
       - created

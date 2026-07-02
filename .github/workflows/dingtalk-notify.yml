@@ -2,9 +2,9 @@ name: DingTalk Notify GitHub Collaboration
 
 on:
   issues:
-    types: [opened, assigned, closed, reopened, milestoned, demilestoned]
+    types: [assigned]
   pull_request:
-    types: [opened, assigned, closed, reopened, ready_for_review, review_requested, milestoned, demilestoned]
+    types: [assigned, review_requested]
   issue_comment:
     types: [created]
   pull_request_review:

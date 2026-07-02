@@ -125,11 +125,11 @@ function issueLikeFromPayload(payload) {
 }
 
 function actorLogin(payload) {
-  return compact(payload.sender?.login, "unknown");
+  return compact(payload.sender?.login, "未知");
 }
 
 function repoName(payload) {
-  return compact(payload.repository?.full_name, process.env.GITHUB_REPOSITORY ?? "unknown");
+  return compact(payload.repository?.full_name, process.env.GITHUB_REPOSITORY ?? "未知仓库");
 }
 
 function isEnabledEvent(config, eventName, action) {
@@ -270,6 +270,16 @@ function actionText(eventName, action, payload) {
   return `${eventName} ${action}`;
 }
 
+function reviewStateText(state) {
+  return {
+    approved: "已批准",
+    changes_requested: "请求修改",
+    commented: "已评论",
+    dismissed: "已撤销",
+    pending: "待提交",
+  }[compact(state)] ?? compact(state);
+}
+
 function titleForEvent(eventName, action, payload) {
   if (eventName === "issues") {
     return action === "assigned" ? "GitHub Issue 分配" : "GitHub Issue 通知";
@@ -372,7 +382,7 @@ function buildMessage({ config, membersConfig, eventName, payload }) {
   }
 
   if (payload.review?.state) {
-    lines.push(`审核状态：${markdownEscape(payload.review.state)}`);
+    lines.push(`审核状态：${markdownEscape(reviewStateText(payload.review.state))}`);
   }
 
   const commentBody = payload.comment?.body ?? payload.review?.body;
@@ -434,7 +444,7 @@ async function githubJson(url, token) {
   });
   const responseText = await response.text();
   if (!response.ok) {
-    throw new Error(`GitHub API failed: HTTP ${response.status} ${responseText}`);
+    throw new Error(`GitHub API 请求失败：HTTP ${response.status} ${responseText}`);
   }
   return JSON.parse(responseText);
 }
@@ -543,7 +553,7 @@ async function main() {
   const eventName = compact(process.env.GITHUB_EVENT_NAME);
   const eventPath = compact(process.env.GITHUB_EVENT_PATH);
   if (!eventName || !eventPath) {
-    throw new Error("GITHUB_EVENT_NAME and GITHUB_EVENT_PATH are required.\n\n" + usage());
+    throw new Error("缺少 GITHUB_EVENT_NAME 或 GITHUB_EVENT_PATH。\n\n" + usage());
   }
 
   const config = await fs.readFile(configPath, "utf8").then(parseSimpleYaml);

@@ -23,7 +23,7 @@ async function main() {
   const title = compact(process.env.DINGTALK_TITLE);
   const text = normalizeMarkdownText(process.env.DINGTALK_TEXT);
   if (!title || !text) {
-    throw new Error("DINGTALK_TITLE and DINGTALK_TEXT are required.");
+    throw new Error("缺少 DINGTALK_TITLE 或 DINGTALK_TEXT。");
   }
 
   const webhookUrl = resolveDingTalkWebhookUrl({
@@ -38,7 +38,7 @@ async function main() {
     atUserIds: parseAtUserIds(process.env.DINGTALK_AT_USER_IDS),
   });
 
-  console.log("DingTalk notification sent.");
+  console.log("钉钉通知已发送。");
 }
 
 main().catch((error) => {

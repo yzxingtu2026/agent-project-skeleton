@@ -36,7 +36,7 @@ export function resolveDingTalkWebhookUrl(options = {}) {
 
   if (!webhookUrl) {
     const secretHint = options.webhookSecretName || "DINGTALK_WEBHOOK";
-    throw new Error(`DingTalk webhook secret is missing. Configure ${secretHint} in GitHub Actions Secrets.`);
+    throw new Error(`缺少钉钉机器人 Webhook Secret。请在 GitHub Actions Secrets 中配置 ${secretHint}。`);
   }
 
   const signSecret = options.signSecretName
@@ -65,7 +65,7 @@ export async function postDingTalkMarkdown({ webhookUrl, title, text, atUserIds 
 
   const responseText = await response.text();
   if (!response.ok) {
-    throw new Error(`DingTalk webhook failed: HTTP ${response.status} ${responseText}`);
+    throw new Error(`钉钉机器人 Webhook 请求失败：HTTP ${response.status} ${responseText}`);
   }
 
   let result;
@@ -76,6 +76,6 @@ export async function postDingTalkMarkdown({ webhookUrl, title, text, atUserIds 
   }
 
   if (result.errcode && result.errcode !== 0) {
-    throw new Error(`DingTalk webhook failed: ${responseText}`);
+    throw new Error(`钉钉机器人 Webhook 返回失败：${responseText}`);
   }
 }

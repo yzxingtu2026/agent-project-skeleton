@@ -9,11 +9,11 @@ const defaultMembersPath = ".agent/team/members.yml";
 
 function usage() {
   return [
-    "Usage:",
-    "  GITHUB_EVENT_NAME=<event> GITHUB_EVENT_PATH=<payload.json> node .github/scripts/dingtalk-notify.mjs",
+    "用法：",
+    "  GITHUB_EVENT_NAME=<事件> GITHUB_EVENT_PATH=<payload.json> node .github/scripts/dingtalk-notify.mjs",
     "",
-    "Options:",
-    "  --dry-run    Print DingTalk payload without sending.",
+    "参数：",
+    "  --dry-run    只打印钉钉消息 payload，不发送。",
   ].join("\n");
 }
 
@@ -73,7 +73,7 @@ function parseSimpleYaml(content) {
       const current = stack[stack.length - 1];
       if (!Array.isArray(current.value)) {
         if (!current.parent || !current.key) {
-          throw new Error("YAML list item is missing a parent key.");
+          throw new Error("YAML 列表项缺少父级字段。");
         }
         current.parent[current.key] = [];
         current.value = current.parent[current.key];
@@ -207,81 +207,13 @@ function withoutActor(logins, payload, config) {
   return logins.filter((login) => login !== actor);
 }
 
-function issueOrPrLabel(eventName, item) {
-  const type = eventName === "pull_request" || isPullRequestIssue(item) || item?.html_url?.includes("/pull/")
-    ? "PR"
-    : "Issue";
-  return `${type}: #${item?.number ?? "?"} ${item?.title ?? ""}`;
-}
-
-function actionText(eventName, action, payload) {
-  if (eventName === "issues") {
-    return {
-      opened: "new Issue",
-      assigned: "assigned Issue",
-      closed: "closed Issue",
-      reopened: "reopened Issue",
-      milestoned: "set Issue milestone",
-      demilestoned: "removed Issue milestone",
-    }[action] ?? `Issue ${action}`;
-  }
-  if (eventName === "pull_request") {
-    return {
-      opened: "new PR",
-      assigned: "assigned PR",
-      closed: payload.pull_request?.merged ? "merged PR" : "closed PR",
-      reopened: "reopened PR",
-      ready_for_review: "marked PR ready for review",
-      review_requested: "requested PR review",
-      milestoned: "set PR milestone",
-      demilestoned: "removed PR milestone",
-    }[action] ?? `PR ${action}`;
-  }
-  if (eventName === "issue_comment") {
-    return isPullRequestIssue(payload.issue) ? "new PR comment" : "new Issue comment";
-  }
-  if (eventName === "pull_request_review") {
-    return "submitted PR review";
-  }
-  if (eventName === "pull_request_review_comment") {
-    return "new PR line comment";
-  }
-  return `${eventName} ${action}`;
-}
-
-function titleForEvent(eventName, action, payload) {
-  if (eventName === "issues") {
-    return action === "assigned" ? "GitHub Issue Assignment" : "GitHub Issue Notification";
-  }
-  if (eventName === "pull_request") {
-    if (action === "review_requested") {
-      return "GitHub PR Review Request";
-    }
-    return action === "assigned" ? "GitHub PR Assignment" : "GitHub PR Notification";
-  }
-  if (eventName === "issue_comment") {
-    return isPullRequestIssue(payload.issue) ? "GitHub PR Comment" : "GitHub Issue Comment";
-  }
-  if (eventName === "pull_request_review") {
-    return "GitHub PR Review";
-  }
-  if (eventName === "pull_request_review_comment") {
-    return "GitHub PR Line Comment";
-  }
-  return "GitHub Notification";
-}
-
-function targetLoginsForEvent(config, membersConfig, eventName, action, payload) {
+function targetLoginsFromExplicitAssignment(config, eventName, action, payload) {
   const rules = config.rules ?? {};
   const targets = [];
 
   if (eventName === "issues" && action === "assigned" && rules.mention_assignee !== false) {
     targets.push(payload.assignee?.login);
   }
-  if (eventName === "issues" && rules.mention_issue_author_on_comment !== false) {
-    targets.push(payload.issue?.user?.login);
-  }
-
   if (eventName === "pull_request" && action === "assigned" && rules.mention_assignee !== false) {
     targets.push(payload.assignee?.login);
   }
@@ -292,43 +224,115 @@ function targetLoginsForEvent(config, membersConfig, eventName, action, payload)
   ) {
     targets.push(payload.requested_reviewer?.login);
   }
-  if (eventName === "pull_request" && rules.mention_pr_author_on_comment !== false) {
-    targets.push(payload.pull_request?.user?.login);
+
+  return unique(targets);
+}
+
+function issueOrPrLabel(eventName, item) {
+  const type = eventName === "pull_request" || isPullRequestIssue(item) || item?.html_url?.includes("/pull/")
+    ? "PR"
+    : "Issue";
+  return `${type}：#${item?.number ?? "?"} ${item?.title ?? ""}`;
+}
+
+function actionText(eventName, action, payload) {
+  if (eventName === "issues") {
+    return {
+      opened: "新建了 Issue",
+      assigned: "分配了 Issue",
+      closed: "关闭了 Issue",
+      reopened: "重新打开了 Issue",
+      milestoned: "设置了 Issue 里程碑",
+      demilestoned: "移除了 Issue 里程碑",
+    }[action] ?? `Issue ${action}`;
   }
+  if (eventName === "pull_request") {
+    return {
+      opened: "新建了 PR",
+      assigned: "分配了 PR",
+      closed: payload.pull_request?.merged ? "合并了 PR" : "关闭了 PR",
+      reopened: "重新打开了 PR",
+      ready_for_review: "标记 PR 为可 Review",
+      review_requested: "请求 PR Review",
+      milestoned: "设置了 PR 里程碑",
+      demilestoned: "移除了 PR 里程碑",
+    }[action] ?? `PR ${action}`;
+  }
+  if (eventName === "issue_comment") {
+    return isPullRequestIssue(payload.issue) ? "新增了 PR 评论" : "新增了 Issue 评论";
+  }
+  if (eventName === "pull_request_review") {
+    return "提交了 PR Review";
+  }
+  if (eventName === "pull_request_review_comment") {
+    return "新增了 PR 行评论";
+  }
+  return `${eventName} ${action}`;
+}
+
+function titleForEvent(eventName, action, payload) {
+  if (eventName === "issues") {
+    return action === "assigned" ? "GitHub Issue 分配" : "GitHub Issue 通知";
+  }
+  if (eventName === "pull_request") {
+    if (action === "review_requested") {
+      return "GitHub PR Review 请求";
+    }
+    return action === "assigned" ? "GitHub PR 分配" : "GitHub PR 通知";
+  }
+  if (eventName === "issue_comment") {
+    return isPullRequestIssue(payload.issue) ? "GitHub PR 评论" : "GitHub Issue 评论";
+  }
+  if (eventName === "pull_request_review") {
+    return "GitHub PR Review";
+  }
+  if (eventName === "pull_request_review_comment") {
+    return "GitHub PR 行评论";
+  }
+  return "GitHub 通知";
+}
+
+function targetLoginsForEvent(config, membersConfig, eventName, action, payload) {
+  const rules = config.rules ?? {};
+  const explicitTargets = targetLoginsFromExplicitAssignment(config, eventName, action, payload);
+  const relatedTargets = [];
 
   if (eventName === "issue_comment") {
     if (rules.mention_comment_mentions !== false) {
-      targets.push(...mentionedLoginsFromText(payload.comment?.body, membersConfig));
+      relatedTargets.push(...mentionedLoginsFromText(payload.comment?.body, membersConfig));
     }
 
     if (isPullRequestIssue(payload.issue)) {
       if (rules.mention_assignee !== false) {
-        targets.push(...loginsFromUsers(payload.issue?.assignees));
+        relatedTargets.push(...loginsFromUsers(payload.issue?.assignees));
       }
       if (rules.mention_pr_reviewers_on_comment !== false) {
-        targets.push(...loginsFromUsers(payload.issue?.requested_reviewers));
+        relatedTargets.push(...loginsFromUsers(payload.issue?.requested_reviewers));
       }
       if (rules.mention_pr_author_on_comment !== false) {
-        targets.push(payload.issue?.user?.login);
+        relatedTargets.push(payload.issue?.user?.login);
       }
     } else {
       if (rules.mention_issue_assignees_on_comment !== false) {
-        targets.push(...loginsFromUsers(payload.issue?.assignees));
+        relatedTargets.push(...loginsFromUsers(payload.issue?.assignees));
       }
       if (rules.mention_issue_author_on_comment !== false) {
-        targets.push(payload.issue?.user?.login);
+        relatedTargets.push(payload.issue?.user?.login);
       }
     }
   }
 
   if (eventName === "pull_request_review" && rules.mention_pr_author_on_comment !== false) {
-    targets.push(payload.pull_request?.user?.login);
+    relatedTargets.push(payload.pull_request?.user?.login);
   }
   if (eventName === "pull_request_review_comment" && rules.mention_pr_author_on_comment !== false) {
-    targets.push(payload.pull_request?.user?.login);
+    relatedTargets.push(payload.pull_request?.user?.login);
   }
 
-  return withoutActor(unique(targets), payload, config);
+  return unique([
+    ...explicitTargets,
+    ...withoutActor(unique(relatedTargets), payload, config),
+  ]);
 }
 
 function buildMessage({ config, membersConfig, eventName, payload }) {
@@ -338,12 +342,12 @@ function buildMessage({ config, membersConfig, eventName, payload }) {
   const mentionedUsers = unique(targetLogins.map((login) => dingtalkUserIdForLogin(membersConfig, login)));
   const targetDescriptions = targetLogins.map((login) => {
     const role = memberRoleForLogin(membersConfig, login);
-    return role ? `${login} (${role})` : login;
+    return role ? `${login}（${role}）` : login;
   });
   const mentionLine = mentionedUsers.length > 0
-    ? `${mentionedUsers.map((userId) => `@${userId}`).join(" ")} please check this GitHub collaboration update.`
+    ? `${mentionedUsers.map((userId) => `@${userId}`).join(" ")} 请关注这条 GitHub 协作通知。`
     : targetLogins.length > 0
-      ? `Target GitHub users: ${targetDescriptions.map(markdownEscape).join(", ")}. DingTalk user IDs are missing, so nobody was mentioned.`
+      ? `目标 GitHub 用户：${targetDescriptions.map(markdownEscape).join("、")}（未配置钉钉 userId，未 @）。`
       : "";
 
   const lines = [
@@ -356,19 +360,19 @@ function buildMessage({ config, membersConfig, eventName, payload }) {
   }
 
   lines.push(
-    `Repository: ${markdownEscape(repoName(payload))}`,
-    `Event: ${markdownEscape(actionText(eventName, action, payload))}`,
-    `Item: ${markdownEscape(issueOrPrLabel(eventName, item))}`,
-    `Actor: ${markdownEscape(actorLogin(payload))}`,
+    `仓库：${markdownEscape(repoName(payload))}`,
+    `事件：${markdownEscape(actionText(eventName, action, payload))}`,
+    `位置：${markdownEscape(issueOrPrLabel(eventName, item))}`,
+    `操作人：${markdownEscape(actorLogin(payload))}`,
   );
 
   const milestone = item?.milestone?.title ?? payload.milestone?.title;
   if (milestone) {
-    lines.push(`Milestone: ${markdownEscape(milestone)}`);
+    lines.push(`里程碑：${markdownEscape(milestone)}`);
   }
 
   if (payload.review?.state) {
-    lines.push(`Review state: ${markdownEscape(payload.review.state)}`);
+    lines.push(`Review 状态：${markdownEscape(payload.review.state)}`);
   }
 
   const commentBody = payload.comment?.body ?? payload.review?.body;
@@ -379,7 +383,7 @@ function buildMessage({ config, membersConfig, eventName, payload }) {
 
   const url = commentUrl ?? item?.html_url ?? payload.repository?.html_url;
   if (url) {
-    lines.push("", `[View details](${url})`);
+    lines.push("", `[查看详情](${url})`);
   }
 
   return {
@@ -475,11 +479,16 @@ async function recentDebouncedItems({ config, eventName, action, payload }) {
 }
 
 function debouncedTargetLogins({ config, eventName, action, payload, items }) {
-  const targets = [
+  const explicitTargets = [
     debounceTargetLogin(eventName, action, payload),
+  ];
+  const relatedTargets = [
     ...items.map((item) => item.creator_login),
   ];
-  return withoutActor(unique(targets), payload, config);
+  return unique([
+    ...explicitTargets,
+    ...withoutActor(unique(relatedTargets), payload, config),
+  ]);
 }
 
 function buildDebouncedMessage({ config, membersConfig, eventName, payload, items }) {
@@ -492,13 +501,13 @@ function buildDebouncedMessage({ config, membersConfig, eventName, payload, item
   const mentionedUsers = unique(targetLogins.map((login) => dingtalkUserIdForLogin(membersConfig, login)));
   const targetDescriptions = targetLogins.map((login) => {
     const role = memberRoleForLogin(membersConfig, login);
-    return role ? `${login} (${role})` : login;
+    return role ? `${login}（${role}）` : login;
   });
-  const title = eventName === "issues" ? "GitHub Issue Assignment Summary" : "GitHub PR Collaboration Summary";
+  const title = eventName === "issues" ? "GitHub Issue 分配汇总" : "GitHub PR 协作通知汇总";
   const mentionLine = mentionedUsers.length > 0
-    ? `${mentionedUsers.map((userId) => `@${userId}`).join(" ")} please check these GitHub collaboration updates.`
+    ? `${mentionedUsers.map((userId) => `@${userId}`).join(" ")} 请关注这批 GitHub 协作通知。`
     : targetLogins.length > 0
-      ? `Target GitHub users: ${targetDescriptions.map(markdownEscape).join(", ")}. DingTalk user IDs are missing, so nobody was mentioned.`
+      ? `目标 GitHub 用户：${targetDescriptions.map(markdownEscape).join("、")}（未配置钉钉 userId，未 @）。`
       : "";
   const lines = [
     `## ${title}`,
@@ -510,11 +519,11 @@ function buildDebouncedMessage({ config, membersConfig, eventName, payload, item
   }
 
   lines.push(
-    `Repository: ${markdownEscape(repoName(payload))}`,
-    `Event: ${markdownEscape(actionText(eventName, action, payload))}`,
-    `Count: ${items.length}`,
+    `仓库：${markdownEscape(repoName(payload))}`,
+    `事件：${markdownEscape(actionText(eventName, action, payload))}`,
+    `数量：${items.length}`,
     "",
-    ...items.map((item) => `- ${markdownEscape(item.type)}: #${item.number} ${markdownEscape(item.title)}  [View](${item.html_url})`),
+    ...items.map((item) => `- ${markdownEscape(item.type)}：#${item.number} ${markdownEscape(item.title)}  [查看](${item.html_url})`),
   );
 
   return {
@@ -546,15 +555,15 @@ async function main() {
 
   const action = compact(payload.action);
   if (!isEnabledEvent(config, eventName, action)) {
-    console.log(`Skip DingTalk notification: ${eventName}.${action} is disabled.`);
+    console.log(`跳过钉钉通知：${eventName}.${action} 未启用。`);
     return;
   }
   if (isIgnoredActor(config, payload)) {
-    console.log(`Skip DingTalk notification: actor ${actorLogin(payload)} is ignored.`);
+    console.log(`跳过钉钉通知：操作人 ${actorLogin(payload)} 在忽略名单中。`);
     return;
   }
   if (shouldSkipMergedPullRequestClose(config, eventName, action, payload)) {
-    console.log("Skip DingTalk notification: merged PR close is handled by a dedicated merge notification workflow.");
+    console.log("跳过钉钉通知：已合并 PR 的关闭事件由专用合并通知 workflow 处理。");
     return;
   }
 
@@ -567,14 +576,14 @@ async function main() {
   ) {
     const waitSeconds = dryRun ? 0 : Number(config.rules?.debounce_wait_seconds ?? 45);
     if (waitSeconds > 0) {
-      console.log(`Waiting ${waitSeconds}s to debounce ${eventName}.${action} notifications.`);
+      console.log(`等待 ${waitSeconds}s 以合并 ${eventName}.${action} 通知。`);
       await sleep(waitSeconds * 1000);
     }
     try {
       const items = await recentDebouncedItems({ config, eventName, action, payload });
       message = buildDebouncedMessage({ config, membersConfig, eventName, payload, items }) ?? message;
     } catch (error) {
-      console.warn(`Debounced summary fallback to single notification: ${error.message}`);
+      console.warn(`防抖汇总失败，回退为单条通知：${error.message}`);
     }
   }
 
@@ -604,7 +613,7 @@ async function main() {
     text: message.text,
     atUserIds: message.atUserIds,
   });
-  console.log("DingTalk notification sent.");
+  console.log("钉钉通知已发送。");
 }
 
 main().catch((error) => {

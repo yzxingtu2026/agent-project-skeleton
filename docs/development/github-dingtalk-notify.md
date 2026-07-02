@@ -45,7 +45,7 @@ members:
 
 通知开关、事件白名单和 @ 策略维护在 `.github/dingtalk-notify.yml`。
 
-默认会聚合相关人并在同一条消息内 @：评论正文中的已绑定 `@github-login`、Issue/PR assignees、PR requested reviewers、Issue/PR 作者。发送前会去重并排除当前事件操作者本人，避免自己操作后又 @ 自己。
+默认会聚合相关人并在同一条消息内 @：评论正文中的已绑定 `@github-login`、Issue/PR assignees、PR requested reviewers、Issue/PR 作者。评论、Review、作者等间接相关人会去重并排除当前事件操作者本人；直接 assign 或 request review 的明确目标人会保留 @，即使操作者把任务分配给自己。
 
 批量分配 Issue/PR 或批量请求 Review 时启用短窗口防抖：同一仓库、同一事件类型、同一目标人的运行只保留最后一次，等待 `debounce_wait_seconds` 后查询最近 `debounce_window_seconds` 内的相关项并合并为一条摘要通知。评论、Review、行评论保持即时通知。
 

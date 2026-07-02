@@ -1,0 +1,56 @@
+enabled: false
+
+routes:
+  default:
+    webhook_secret_name: DINGTALK_COLLAB_WEBHOOK
+    sign_secret_name: DINGTALK_COLLAB_SIGN_SECRET
+
+members:
+  source: .agent/team/members.yml
+
+events:
+  issues:
+    actions:
+      - assigned
+      - opened
+      - closed
+      - reopened
+      - milestoned
+      - demilestoned
+  pull_request:
+    actions:
+      - assigned
+      - opened
+      - closed
+      - reopened
+      - ready_for_review
+      - review_requested
+      - milestoned
+      - demilestoned
+  issue_comment:
+    actions:
+      - created
+  pull_request_review:
+    actions:
+      - submitted
+  pull_request_review_comment:
+    actions:
+      - created
+
+rules:
+  debounce_enabled: true
+  debounce_wait_seconds: 45
+  debounce_window_seconds: 300
+  debounce_max_items: 10
+  ignore_users:
+    - github-actions[bot]
+    - dependabot[bot]
+  mention_assignee: true
+  mention_requested_reviewer: true
+  mention_comment_mentions: true
+  mention_issue_assignees_on_comment: true
+  mention_pr_reviewers_on_comment: true
+  mention_issue_author_on_comment: true
+  mention_pr_author_on_comment: true
+  exclude_actor_from_mentions: true
+  skip_merged_pr_closed: true

@@ -1,0 +1,72 @@
+name: DingTalk Notify GitHub Collaboration
+
+on:
+  issues:
+    types: [opened, assigned, closed, reopened, milestoned, demilestoned]
+  pull_request:
+    types: [opened, assigned, closed, reopened, ready_for_review, review_requested, milestoned, demilestoned]
+  issue_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  notify-debounced:
+    if: >-
+      (github.event_name == 'issues' && github.event.action == 'assigned') ||
+      (github.event_name == 'pull_request' && (github.event.action == 'assigned' || github.event.action == 'review_requested'))
+    concurrency:
+      group: dingtalk-notify-${{ github.repository }}-${{ github.event_name }}-${{ github.event.action }}-${{ github.event.assignee.login || github.event.requested_reviewer.login || github.event.sender.login }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Send DingTalk notification
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DINGTALK_COLLAB_WEBHOOK: ${{ secrets.DINGTALK_COLLAB_WEBHOOK }}
+          DINGTALK_COLLAB_SIGN_SECRET: ${{ secrets.DINGTALK_COLLAB_SIGN_SECRET }}
+        run: node .github/scripts/dingtalk-notify.mjs
+
+  notify-immediate:
+    if: >-
+      !((github.event_name == 'issues' && github.event.action == 'assigned') ||
+      (github.event_name == 'pull_request' && (github.event.action == 'assigned' || github.event.action == 'review_requested')))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Send DingTalk notification
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          DINGTALK_NOTIFY_DISABLE_DEBOUNCE: "1"
+          DINGTALK_COLLAB_WEBHOOK: ${{ secrets.DINGTALK_COLLAB_WEBHOOK }}
+          DINGTALK_COLLAB_SIGN_SECRET: ${{ secrets.DINGTALK_COLLAB_SIGN_SECRET }}
+        run: node .github/scripts/dingtalk-notify.mjs

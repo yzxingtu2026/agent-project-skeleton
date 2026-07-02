@@ -10,6 +10,7 @@
 4. 按项目情况调整 `.agent/rules/`、`.agent/skills/`、`.agent/team/`，再运行 `npx -y @yz-xingtu/agent-rules@latest sync`。
 5. 查看本地生成的 `AGENTS.md` / `CLAUDE.md`，确认项目上下文和使用者信息。
 6. 新增通用封装、统一组件、公共工具或跨模块约定时，同步记录到规则源或 `docs/development/`。
+7. 如需 GitHub Issue/PR 钉钉实时通知，按 `docs/development/github-dingtalk-notify.md` 配置 Secrets 后启用 `.github/dingtalk-notify.yml`。
 
 ## 目录
 
@@ -22,6 +23,8 @@
 .agent/tools/agent-rules/
 docs/development/
 .github/ISSUE_TEMPLATE/
+.github/workflows/
+.github/scripts/
 .github/PULL_REQUEST_TEMPLATE.md
 ```
 

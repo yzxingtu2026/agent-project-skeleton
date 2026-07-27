@@ -1,0 +1,6 @@
+**/__pycache__/
+**/*.py[cod]
+.env
+*.log
+ui-generation-tasks/
+docs/images/ui-generated/

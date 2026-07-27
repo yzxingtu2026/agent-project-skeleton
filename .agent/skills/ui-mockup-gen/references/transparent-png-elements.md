@@ -116,7 +116,11 @@ python .agent/skills/ui-mockup-gen/scripts/remove_solid_background.py \
   docs/images/ui-generated/element-solid-bg.png \
   --background '#00FF00' \
   --tolerance 28 \
-  --feather 20 \
+  --feather 160 \
+  --island-feather 100 \
+  --edge-contract 2 \
+  --blur-radius 0.8 \
+  --decontaminate-radius 6 \
   --crop \
   --padding 8 \
   --output docs/images/ui-generated/element.png
@@ -127,11 +131,15 @@ python .agent/skills/ui-mockup-gen/scripts/remove_solid_background.py \
 ## 参数选择
 
 - `--background auto|#RRGGBB|R,G,B`：默认 `auto`，从四角区域估算背景色；已知 Prompt 背景色时优先显式传入。
-- `--tolerance`：完全透明的色差范围，默认 `28`。背景残留时逐步提高；主体被误删时降低。
-- `--feather`：从透明到不透明的羽化范围，默认 `20`。锯齿明显时适当提高；轮廓发虚时降低。
+- `--tolerance`：高置信度背景的色差范围，默认 `28`。背景噪点较多时逐步提高；主体被误删时降低。
+- `--feather`：背景边缘的颜色羽化范围，默认 `160`。连通扩散另有内部上限，不会因为提高羽化范围而沿深色结构侵入主体内部。
+- `--island-feather`：对色相仍接近背景、但被光晕或半透明效果包围的封闭背景岛增加额外羽化范围，默认 `100`。复杂光效内部残留背景色时提高；主体包含接近背景色的半透明材质时降低或设为 `0`。
+- `--edge-contract`：背景遮罩向主体内收缩的像素数，默认 `2`，用于移除模型生成图边缘的背景混色。细线被侵蚀时改为 `1` 或 `0`。
+- `--blur-radius`：Alpha 遮罩的高斯模糊半径，默认 `0.8`。锯齿明显时适当提高；轮廓发虚时降低。
+- `--decontaminate-radius`：从主体内部确定前景区域向边缘延展颜色的搜索半径，默认 `6`，用于去除绿色、洋红色等背景溢色。细小结构颜色断裂时降低。
 - `--crop`：按非透明区域裁切画布。
 - `--padding`：裁切后保留的透明边距，默认 `0`。
-- `--no-decontaminate`：关闭边缘背景色去污。默认开启，用于减少绿色或洋红色边缘。
+- `--no-decontaminate`：关闭基于邻近确定前景颜色的边缘去污。默认开启，用于减少绿色或洋红色边缘。
 - `--json`：输出结构化结果，便于其他脚本消费。
 
 纯色背景与主体颜色接近时，不要一味提高容差。应重新生成一个背景色差更大的源图。
@@ -153,7 +161,8 @@ python .agent/skills/ui-mockup-gen/scripts/remove_solid_background.py \
 
 - 四角背景色不一致：源图不是纯色背景，优先重新生成；也可显式指定 `--background`，但渐变和复杂光影无法可靠色键抠图。
 - 主体颜色被抠除：换用主体中不存在的背景色重新生成，或降低 `--tolerance`。
-- 边缘残留背景色：保持去污开启，适当提高 `--feather`；仍不理想时重新生成边缘更清晰、无阴影的源图。
+- 边缘残留背景色：保持去污开启，先将 `--edge-contract` 调为 `2`，再适当提高 `--feather`；仍不理想时重新生成边缘更清晰、无阴影的源图。
+- 光环、波纹内部残留封闭背景色：适当提高 `--island-feather`；同时在深浅背景检查特效本身是否被削弱。
 - 毛发、烟雾、玻璃或半透明物体效果差：纯色色键不是精细语义抠图；需要专用分割模型或人工遮罩时明确告知用户，不伪装成高质量结果。
 - 缺少 Pillow：安装依赖后重试；不得在脚本中静默跳过抠图。
 - 完全没有检测到主体：停止并检查背景色、容差和源图片，不输出误导性的空白素材。

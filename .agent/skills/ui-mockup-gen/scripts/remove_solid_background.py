@@ -60,37 +60,199 @@ def smoothstep(value: float) -> float:
     return value * value * (3.0 - 2.0 * value)
 
 
-def remove_background(image, background, tolerance: float, feather: float, decontaminate: bool):
-    source = image.convert("RGBA")
-    output_pixels = []
-    transparent_pixels = 0
+def chroma_similarity(color, background) -> float:
+    color_mean = sum(color) / 3.0
+    background_mean = sum(background) / 3.0
+    color_vector = tuple(channel - color_mean for channel in color)
+    background_vector = tuple(channel - background_mean for channel in background)
+    color_norm = math.sqrt(sum(channel * channel for channel in color_vector))
+    background_norm = math.sqrt(sum(channel * channel for channel in background_vector))
+    if color_norm < 5.0 or background_norm < 5.0:
+        return -1.0
+    return sum(a * b for a, b in zip(color_vector, background_vector)) / (color_norm * background_norm)
 
-    for red, green, blue, source_alpha in image_pixels(source):
+
+def build_alpha_matte(
+    image,
+    background,
+    tolerance: float,
+    feather: float,
+    island_feather: float,
+    edge_contract: int,
+    blur_radius: float,
+):
+    from PIL import Image, ImageChops, ImageDraw, ImageFilter
+
+    rgb_source = image.convert("RGB")
+    background_strength: list[int] = []
+    broad_candidates: list[int] = []
+    high_confidence: list[int] = []
+    island_strength: list[int] = []
+    connectivity_limit = tolerance + min(feather, 64.0)
+
+    for red, green, blue in image_pixels(rgb_source):
         distance = math.sqrt(
             (red - background[0]) ** 2
             + (green - background[1]) ** 2
             + (blue - background[2]) ** 2
         )
         if distance <= tolerance:
-            key_alpha = 0
+            strength = 255
         elif feather == 0 or distance >= tolerance + feather:
-            key_alpha = 255
+            strength = 0
         else:
-            key_alpha = round(255 * smoothstep((distance - tolerance) / feather))
+            strength = round(255 * (1.0 - smoothstep((distance - tolerance) / feather)))
+        background_strength.append(strength)
+        broad_candidates.append(255 if distance <= connectivity_limit else 0)
+        high_confidence.append(255 if distance <= tolerance else 0)
+        extended_feather = feather + island_feather
+        if chroma_similarity((red, green, blue), background) < 0.45:
+            island_strength.append(0)
+        elif distance <= tolerance:
+            island_strength.append(255)
+        elif extended_feather == 0 or distance >= tolerance + extended_feather:
+            island_strength.append(0)
+        else:
+            island_strength.append(
+                round(255 * (1.0 - smoothstep((distance - tolerance) / extended_feather)))
+            )
 
-        alpha = round(source_alpha * key_alpha / 255)
+    candidates = Image.new("L", rgb_source.size)
+    candidates.putdata(broad_candidates)
+    width, height = rgb_source.size
+    for point in ((0, 0), (width - 1, 0), (0, height - 1), (width - 1, height - 1)):
+        if candidates.getpixel(point) == 255:
+            ImageDraw.floodfill(candidates, point, 128, thresh=0)
+
+    connected = [value == 128 for value in image_pixels(candidates)]
+    matte_data = [
+        max(strength if is_connected else 0, certain, island)
+        for strength, is_connected, certain, island in zip(
+            background_strength,
+            connected,
+            high_confidence,
+            island_strength,
+        )
+    ]
+    background_matte = Image.new("L", rgb_source.size)
+    background_matte.putdata(matte_data)
+
+    if edge_contract > 0:
+        background_matte = background_matte.filter(ImageFilter.MaxFilter(edge_contract * 2 + 1))
+    if blur_radius > 0:
+        background_matte = background_matte.filter(ImageFilter.GaussianBlur(blur_radius))
+
+    alpha = ImageChops.invert(background_matte)
+    source_alpha = image.convert("RGBA").getchannel("A")
+    return ImageChops.multiply(alpha, source_alpha)
+
+
+def reconstruct_edge_colors(source, alpha_matte, background, tolerance: float, feather: float, radius: int):
+    from PIL import ImageFilter
+
+    if radius <= 0:
+        return list(image_pixels(source))
+
+    width, height = source.size
+    source_pixels = list(image_pixels(source))
+    alpha_pixels = list(image_pixels(alpha_matte))
+    boundary_band = list(image_pixels(alpha_matte.filter(ImageFilter.MinFilter(3))))
+    reliable_distance = tolerance + min(feather, 64.0) + 30.0
+    reliable_foreground = []
+    for (red, green, blue, _), alpha in zip(source_pixels, alpha_pixels):
+        distance = math.sqrt(
+            (red - background[0]) ** 2
+            + (green - background[1]) ** 2
+            + (blue - background[2]) ** 2
+        )
+        reliable_foreground.append(alpha >= 250 and distance >= reliable_distance)
+    reconstructed = list(source_pixels)
+
+    for index, alpha in enumerate(alpha_pixels):
+        if alpha == 0 or boundary_band[index] == 255 or reliable_foreground[index]:
+            continue
+        x = index % width
+        y = index // width
+        weighted = [0.0, 0.0, 0.0]
+        total_weight = 0.0
+
+        for offset_y in range(-radius, radius + 1):
+            candidate_y = y + offset_y
+            if candidate_y < 0 or candidate_y >= height:
+                continue
+            for offset_x in range(-radius, radius + 1):
+                candidate_x = x + offset_x
+                if candidate_x < 0 or candidate_x >= width:
+                    continue
+                distance_squared = offset_x * offset_x + offset_y * offset_y
+                if distance_squared == 0 or distance_squared > radius * radius:
+                    continue
+                candidate_index = candidate_y * width + candidate_x
+                if not reliable_foreground[candidate_index]:
+                    continue
+                weight = 1.0 / distance_squared
+                candidate = source_pixels[candidate_index]
+                for channel in range(3):
+                    weighted[channel] += candidate[channel] * weight
+                total_weight += weight
+
+        if total_weight > 0:
+            reconstructed[index] = (
+                *(round(channel / total_weight) for channel in weighted),
+                source_pixels[index][3],
+            )
+        elif alpha < 255:
+            coverage = max(alpha / 255.0, 1 / 255.0)
+            channels = []
+            for channel, background_channel in zip(source_pixels[index][:3], background):
+                foreground = (channel - (1.0 - coverage) * background_channel) / coverage
+                channels.append(round(max(0.0, min(255.0, foreground))))
+            reconstructed[index] = (*channels, source_pixels[index][3])
+
+    return reconstructed
+
+
+def remove_background(
+    image,
+    background,
+    tolerance: float,
+    feather: float,
+    island_feather: float,
+    edge_contract: int,
+    blur_radius: float,
+    decontaminate_radius: int,
+    decontaminate: bool,
+):
+    source = image.convert("RGBA")
+    alpha_matte = build_alpha_matte(
+        source,
+        background,
+        tolerance,
+        feather,
+        island_feather,
+        edge_contract,
+        blur_radius,
+    )
+    color_pixels = (
+        reconstruct_edge_colors(
+            source,
+            alpha_matte,
+            background,
+            tolerance,
+            feather,
+            decontaminate_radius,
+        )
+        if decontaminate
+        else list(image_pixels(source))
+    )
+    output_pixels = []
+    transparent_pixels = 0
+
+    for (red, green, blue, _), alpha in zip(color_pixels, image_pixels(alpha_matte)):
         if alpha == 0:
             output_pixels.append((0, 0, 0, 0))
             transparent_pixels += 1
             continue
-
-        if decontaminate and alpha < 255:
-            coverage = max(alpha / 255.0, 1 / 255.0)
-            channels = []
-            for channel, background_channel in zip((red, green, blue), background):
-                foreground = (channel - (1.0 - coverage) * background_channel) / coverage
-                channels.append(round(max(0.0, min(255.0, foreground))))
-            red, green, blue = channels
 
         output_pixels.append((red, green, blue, alpha))
 
@@ -131,8 +293,27 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="auto|#RRGGBB|R,G,B",
         help="背景色，默认从四角自动估算",
     )
-    parser.add_argument("--tolerance", type=float, default=28.0, help="完全透明的色差范围，默认 28")
-    parser.add_argument("--feather", type=float, default=20.0, help="透明边缘羽化范围，默认 20")
+    parser.add_argument("--tolerance", type=float, default=28.0, help="高置信度背景的色差范围，默认 28")
+    parser.add_argument("--feather", type=float, default=160.0, help="连通背景的颜色羽化范围，默认 160")
+    parser.add_argument(
+        "--island-feather",
+        type=float,
+        default=100.0,
+        help="同背景色相的封闭背景岛额外羽化范围，默认 100",
+    )
+    parser.add_argument(
+        "--edge-contract",
+        type=int,
+        default=2,
+        help="向主体内收缩背景遮罩的像素数，用于清除彩边，默认 2",
+    )
+    parser.add_argument("--blur-radius", type=float, default=0.8, help="Alpha 边缘高斯模糊半径，默认 0.8")
+    parser.add_argument(
+        "--decontaminate-radius",
+        type=int,
+        default=6,
+        help="从主体内部延展边缘颜色的搜索半径，默认 6",
+    )
     parser.add_argument("--crop", action="store_true", help="按非透明主体自动裁边")
     parser.add_argument("--padding", type=int, default=0, help="裁边后保留的透明像素，默认 0")
     parser.add_argument("--no-decontaminate", action="store_true", help="关闭半透明边缘的背景色去污")
@@ -144,8 +325,12 @@ def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
 
-    if args.tolerance < 0 or args.feather < 0:
-        parser.error("tolerance 和 feather 不能为负数")
+    if args.tolerance < 0 or args.feather < 0 or args.island_feather < 0 or args.blur_radius < 0:
+        parser.error("tolerance、feather、island-feather 和 blur-radius 不能为负数")
+    if args.edge_contract < 0:
+        parser.error("edge-contract 不能为负数")
+    if args.decontaminate_radius < 0:
+        parser.error("decontaminate-radius 不能为负数")
     if args.padding < 0:
         parser.error("padding 不能为负数")
 
@@ -180,6 +365,10 @@ def main() -> None:
             background,
             args.tolerance,
             args.feather,
+            args.island_feather,
+            args.edge_contract,
+            args.blur_radius,
+            args.decontaminate_radius,
             not args.no_decontaminate,
         )
         if result.getchannel("A").getbbox() is None:
@@ -199,6 +388,10 @@ def main() -> None:
         "background": "#{:02X}{:02X}{:02X}".format(*background),
         "tolerance": args.tolerance,
         "feather": args.feather,
+        "island_feather": args.island_feather,
+        "edge_contract": args.edge_contract,
+        "blur_radius": args.blur_radius,
+        "decontaminate_radius": args.decontaminate_radius,
         "cropped": args.crop,
         "size": {"width": result.width, "height": result.height},
         "transparent_pixel_ratio": round(transparent_pixels / (source.width * source.height), 4),

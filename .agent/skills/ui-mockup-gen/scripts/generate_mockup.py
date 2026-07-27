@@ -34,6 +34,7 @@ SCRIPT_PATH = Path(__file__).resolve()
 PROJECT_ROOT = Path(os.environ.get("UI_GEN_PROJECT_ROOT", Path.cwd())).expanduser().resolve()
 TASK_DIR = Path(tempfile.gettempdir()) / "ui-generation-tasks"
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
+ASSET_PLATFORMS = {"asset", "element", "icon", "illustration", "png"}
 
 DEFAULT_SYSTEM_CONTEXT = """你是一位资深 UI/UX 设计师和产品型前端工程师，正在为用户生成可落地的 UI 参考图。
 请根据输入的产品背景、平台、风格和界面目标生成清晰、真实、专业的界面设计。
@@ -194,9 +195,14 @@ def build_full_prompt(task: dict) -> str:
 
     sections.append(f"用户需求：\n{task['prompt']}")
 
-    sections.append(
-        """请输出一张完整 UI 参考图。画面中需要包含足够真实的界面元素、内容占位、状态和层级，便于工程师反推实现。"""
-    )
+    if str(platform or "").lower() in ASSET_PLATFORMS:
+        sections.append(
+            "请输出一张独立视觉素材图，不要生成 UI 页面、设计板、说明文字、边框或展示样机。严格遵循用户需求中的主体、纯色背景、构图和留白要求。"
+        )
+    else:
+        sections.append(
+            "请输出一张完整 UI 参考图。画面中需要包含足够真实的界面元素、内容占位、状态和层级，便于工程师反推实现。"
+        )
     return "\n\n".join(sections)
 
 
@@ -683,7 +689,7 @@ def main() -> None:
     p_start.add_argument(
         "--platform",
         default=None,
-        help="目标平台或界面类型，例如 web、mobile、desktop、tablet、game、component",
+        help="目标平台或输出类型，例如 web、mobile、desktop、tablet、game、component、asset、element",
     )
     p_start.add_argument("--style", default=None, help="视觉风格描述")
     p_start.add_argument("--audience", default=None, help="目标用户")

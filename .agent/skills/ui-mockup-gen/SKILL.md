@@ -1,6 +1,6 @@
 ---
 name: ui-mockup-gen
-description: 通用视觉素材生成技能包。通过 OpenAI 兼容图像 API 生成网站、后台系统、桌面软件、移动应用、小程序、游戏或工具的 UI 原型图、界面参考图、设计板和纯色背景视觉元素，并将纯色背景素材处理为透明 PNG。用户要求生成 UI、界面设计、原型图、页面布局、视觉稿、设计参考图、透明 PNG、免抠素材、图标、插画或网页图片元素时使用。
+description: 通用视觉素材生成技能包。通过 OpenAI 兼容图像 API 生成 UI 原型图、界面参考图、设计板、纯色背景视觉元素和连贯动画序列，并将结果处理为透明 PNG、单帧序列、spritesheet 与循环动画预览。用户要求生成 UI、界面设计、原型图、透明 PNG、免抠素材、图标、插画、网页图片元素、角色动作、序列帧、动画素材或循环动画时使用。
 ---
 
 # UI Mockup Gen
@@ -13,3 +13,4 @@ description: 通用视觉素材生成技能包。通过 OpenAI 兼容图像 API 
 
 - UI 原型图、界面参考图和设计板生成：读取 `references/ui-prototype-generation.md`
 - 纯色背景视觉元素生成和透明 PNG 抠图：读取 `references/transparent-png-elements.md`
+- 连贯动画帧、spritesheet 和循环预览生成：读取 `references/animated-assets.md`

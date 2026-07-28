@@ -1,0 +1,197 @@
+{
+  "version": 1,
+  "name": "xiaolin-idle-hover",
+  "frame_count": 8,
+  "fps": 10.0,
+  "duration_ms": 100,
+  "loop": true,
+  "frame": {
+    "width": 311,
+    "height": 347
+  },
+  "spritesheet": {
+    "file": "xiaolin-idle-hover-spritesheet.png",
+    "layout": "horizontal",
+    "width": 2488,
+    "height": 347
+  },
+  "preview": "xiaolin-idle-hover-preview.webp",
+  "source": {
+    "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-grid.png",
+    "width": 1264,
+    "height": 848,
+    "rows": 2,
+    "columns": 4,
+    "cell_width": 316,
+    "cell_height": 424,
+    "trimmed": true,
+    "trim_box": {
+      "left": 0,
+      "top": 53,
+      "right": 311,
+      "bottom": 400
+    }
+  },
+  "frames": [
+    {
+      "index": 0,
+      "file": "frames/xiaolin-idle-hover-000.png",
+      "x": 0,
+      "y": 0,
+      "width": 311,
+      "height": 347,
+      "duration_ms": 100,
+      "content_bbox": {
+        "left": 50,
+        "top": 53,
+        "right": 291,
+        "bottom": 328
+      },
+      "centroid": {
+        "x": 169.07,
+        "y": 210.02
+      },
+      "alpha_coverage": 0.2994
+    },
+    {
+      "index": 1,
+      "file": "frames/xiaolin-idle-hover-001.png",
+      "x": 311,
+      "y": 0,
+      "width": 311,
+      "height": 347,
+      "duration_ms": 100,
+      "content_bbox": {
+        "left": 15,
+        "top": 43,
+        "right": 295,
+        "bottom": 331
+      },
+      "centroid": {
+        "x": 152.77,
+        "y": 207.08
+      },
+      "alpha_coverage": 0.3253
+    },
+    {
+      "index": 2,
+      "file": "frames/xiaolin-idle-hover-002.png",
+      "x": 622,
+      "y": 0,
+      "width": 311,
+      "height": 347,
+      "duration_ms": 100,
+      "content_bbox": {
+        "left": 16,
+        "top": 43,
+        "right": 293,
+        "bottom": 331
+      },
+      "centroid": {
+        "x": 152.54,
+        "y": 207.61
+      },
+      "alpha_coverage": 0.3265
+    },
+    {
+      "index": 3,
+      "file": "frames/xiaolin-idle-hover-003.png",
+      "x": 933,
+      "y": 0,
+      "width": 311,
+      "height": 347,
+      "duration_ms": 100,
+      "content_bbox": {
+        "left": 19,
+        "top": 61,
+        "right": 264,
+        "bottom": 331
+      },
+      "centroid": {
+        "x": 139.88,
+        "y": 218.15
+      },
+      "alpha_coverage": 0.2983
+    },
+    {
+      "index": 4,
+      "file": "frames/xiaolin-idle-hover-004.png",
+      "x": 1244,
+      "y": 0,
+      "width": 311,
+      "height": 347,
+      "duration_ms": 100,
+      "content_bbox": {
+        "left": 39,
+        "top": 16,
+        "right": 290,
+        "bottom": 297
+      },
+      "centroid": {
+        "x": 162.96,
+        "y": 176.09
+      },
+      "alpha_coverage": 0.3102
+    },
+    {
+      "index": 5,
+      "file": "frames/xiaolin-idle-hover-005.png",
+      "x": 1555,
+      "y": 0,
+      "width": 311,
+      "height": 347,
+      "duration_ms": 100,
+      "content_bbox": {
+        "left": 30,
+        "top": 21,
+        "right": 272,
+        "bottom": 297
+      },
+      "centroid": {
+        "x": 149.57,
+        "y": 178.32
+      },
+      "alpha_coverage": 0.3051
+    },
+    {
+      "index": 6,
+      "file": "frames/xiaolin-idle-hover-006.png",
+      "x": 1866,
+      "y": 0,
+      "width": 311,
+      "height": 347,
+      "duration_ms": 100,
+      "content_bbox": {
+        "left": 34,
+        "top": 35,
+        "right": 263,
+        "bottom": 299
+      },
+      "centroid": {
+        "x": 146.77,
+        "y": 187.87
+      },
+      "alpha_coverage": 0.2883
+    },
+    {
+      "index": 7,
+      "file": "frames/xiaolin-idle-hover-007.png",
+      "x": 2177,
+      "y": 0,
+      "width": 311,
+      "height": 347,
+      "duration_ms": 100,
+      "content_bbox": {
+        "left": 21,
+        "top": 20,
+        "right": 272,
+        "bottom": 297
+      },
+      "centroid": {
+        "x": 145.04,
+        "y": 180.64
+      },
+      "alpha_coverage": 0.3091
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "name": "xiaolin-idle-hover-stable",
+  "output_dir": "./animation",
+  "canvas": {
+    "width": 778,
+    "height": 726
+  },
+  "frame_count": 12,
+  "fps": 12,
+  "layers": [
+    {
+      "id": "ground-effect",
+      "file": "./layers/xiaolin-ripple.png",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.86
+      },
+      "position": {
+        "x": 389,
+        "y": 624
+      },
+      "frames": [
+        { "scale_x": 1.00, "opacity": 0.84 },
+        { "scale_x": 1.03, "opacity": 0.79 },
+        { "scale_x": 1.06, "opacity": 0.73 },
+        { "scale_x": 1.08, "opacity": 0.68 },
+        { "scale_x": 1.06, "opacity": 0.73 },
+        { "scale_x": 1.03, "opacity": 0.79 },
+        { "scale_x": 1.00, "opacity": 0.84 },
+        { "scale_x": 0.97, "opacity": 0.89 },
+        { "scale_x": 0.94, "opacity": 0.95 },
+        { "scale_x": 0.92, "opacity": 1.00 },
+        { "scale_x": 0.94, "opacity": 0.95 },
+        { "scale_x": 0.97, "opacity": 0.89 }
+      ]
+    },
+    {
+      "id": "subject",
+      "file": "./layers/xiaolin-subject.png",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.86
+      },
+      "position": {
+        "x": 389,
+        "y": 624
+      },
+      "frames": [
+        { "x": 0, "y": 0 },
+        { "x": 0, "y": -4 },
+        { "x": 0, "y": -7 },
+        { "x": 0, "y": -8 },
+        { "x": 0, "y": -7 },
+        { "x": 0, "y": -4 },
+        { "x": 0, "y": 0 },
+        { "x": 0, "y": 4 },
+        { "x": 0, "y": 7 },
+        { "x": 0, "y": 8 },
+        { "x": 0, "y": 7 },
+        { "x": 0, "y": 4 }
+      ]
+    }
+  ]
+}

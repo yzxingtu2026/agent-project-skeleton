@@ -1,0 +1,585 @@
+{
+  "version": 2,
+  "name": "xiaolin-idle-hover-stable",
+  "frame_count": 12,
+  "fps": 12.0,
+  "duration_ms": 83,
+  "loop": true,
+  "frame": {
+    "width": 778,
+    "height": 726
+  },
+  "spritesheet": {
+    "file": "xiaolin-idle-hover-stable-spritesheet.png",
+    "layout": "horizontal",
+    "width": 9336,
+    "height": 726
+  },
+  "preview": "xiaolin-idle-hover-stable-preview.webp",
+  "source": {
+    "type": "layered-scene",
+    "scene": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/xiaolin-idle-hover-scene.json",
+    "canvas": {
+      "width": 778,
+      "height": 726
+    },
+    "layers": [
+      "ground-effect",
+      "subject"
+    ]
+  },
+  "frames": [
+    {
+      "index": 0,
+      "file": "frames/xiaolin-idle-hover-stable-000.png",
+      "x": 0,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 32,
+        "top": 32,
+        "right": 746,
+        "bottom": 692
+      },
+      "centroid": {
+        "x": 392.71,
+        "y": 396.17
+      },
+      "alpha_coverage": 0.3387,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.84
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "file": "frames/xiaolin-idle-hover-stable-001.png",
+      "x": 778,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 23,
+        "top": 28,
+        "right": 757,
+        "bottom": 692
+      },
+      "centroid": {
+        "x": 392.74,
+        "y": 391.79
+      },
+      "alpha_coverage": 0.3375,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 1.03,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.79
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": -4.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "file": "frames/xiaolin-idle-hover-stable-002.png",
+      "x": 1556,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 12,
+        "top": 25,
+        "right": 767,
+        "bottom": 692
+      },
+      "centroid": {
+        "x": 392.76,
+        "y": 387.71
+      },
+      "alpha_coverage": 0.3356,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 1.06,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.73
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": -7.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "file": "frames/xiaolin-idle-hover-stable-003.png",
+      "x": 2334,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 5,
+        "top": 24,
+        "right": 775,
+        "bottom": 693
+      },
+      "centroid": {
+        "x": 392.78,
+        "y": 385.38
+      },
+      "alpha_coverage": 0.3337,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 1.08,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.68
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": -8.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "file": "frames/xiaolin-idle-hover-stable-004.png",
+      "x": 3112,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 12,
+        "top": 25,
+        "right": 767,
+        "bottom": 692
+      },
+      "centroid": {
+        "x": 392.76,
+        "y": 387.71
+      },
+      "alpha_coverage": 0.3356,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 1.06,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.73
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": -7.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "file": "frames/xiaolin-idle-hover-stable-005.png",
+      "x": 3890,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 23,
+        "top": 28,
+        "right": 757,
+        "bottom": 692
+      },
+      "centroid": {
+        "x": 392.74,
+        "y": 391.79
+      },
+      "alpha_coverage": 0.3375,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 1.03,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.79
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": -4.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "file": "frames/xiaolin-idle-hover-stable-006.png",
+      "x": 4668,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 32,
+        "top": 32,
+        "right": 746,
+        "bottom": 692
+      },
+      "centroid": {
+        "x": 392.71,
+        "y": 396.17
+      },
+      "alpha_coverage": 0.3387,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.84
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "file": "frames/xiaolin-idle-hover-stable-007.png",
+      "x": 5446,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 43,
+        "top": 36,
+        "right": 735,
+        "bottom": 693
+      },
+      "centroid": {
+        "x": 392.64,
+        "y": 400.13
+      },
+      "alpha_coverage": 0.3392,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 0.97,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.89
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": 4.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "file": "frames/xiaolin-idle-hover-stable-008.png",
+      "x": 6224,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 55,
+        "top": 39,
+        "right": 725,
+        "bottom": 693
+      },
+      "centroid": {
+        "x": 392.62,
+        "y": 403.43
+      },
+      "alpha_coverage": 0.3401,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 0.94,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.95
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": 7.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "file": "frames/xiaolin-idle-hover-stable-009.png",
+      "x": 7002,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 62,
+        "top": 40,
+        "right": 718,
+        "bottom": 693
+      },
+      "centroid": {
+        "x": 392.61,
+        "y": 405.01
+      },
+      "alpha_coverage": 0.341,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 0.92,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": 8.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "file": "frames/xiaolin-idle-hover-stable-010.png",
+      "x": 7780,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 55,
+        "top": 39,
+        "right": 725,
+        "bottom": 693
+      },
+      "centroid": {
+        "x": 392.62,
+        "y": 403.43
+      },
+      "alpha_coverage": 0.3401,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 0.94,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.95
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": 7.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "file": "frames/xiaolin-idle-hover-stable-011.png",
+      "x": 8558,
+      "y": 0,
+      "width": 778,
+      "height": 726,
+      "duration_ms": 83,
+      "content_bbox": {
+        "left": 43,
+        "top": 36,
+        "right": 735,
+        "bottom": 693
+      },
+      "centroid": {
+        "x": 392.64,
+        "y": 400.13
+      },
+      "alpha_coverage": 0.3392,
+      "layers": [
+        {
+          "id": "ground-effect",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "transform": {
+            "x": 0.0,
+            "y": 0.0,
+            "scale_x": 0.97,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 0.89
+          }
+        },
+        {
+          "id": "subject",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-subject.png",
+          "transform": {
+            "x": 0.0,
+            "y": 4.0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0,
+            "opacity": 1.0
+          }
+        }
+      ]
+    }
+  ]
+}

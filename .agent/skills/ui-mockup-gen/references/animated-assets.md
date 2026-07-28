@@ -10,6 +10,7 @@
 - 动画类型路由
 - 输出契约
 - 锚点和分层协议
+- 合并素材的图层准备
 - 工作流 A：确定性分层动画
 - 工作流 B：模型状态帧动画
 - Prompt 规则
@@ -69,6 +70,42 @@
 - `free-effect`：粒子、光点
 
 每层使用独立透明 PNG、锚点、目标位置和运动状态。无法可靠自动分离的重叠素材，应在生成阶段分别生成各层，或提供明确遮罩；不要用颜色或整帧质心猜测语义层。
+
+## 合并素材的图层准备
+
+源图已经包含主体和波纹、阴影或光环时，先准备与源图等尺寸的显式主体遮罩和特效遮罩，再运行：
+
+```bash
+python .agent/skills/ui-mockup-gen/scripts/prepare_animation_layers.py \
+  character-with-effect.png \
+  --subject-mask character-subject-mask.png \
+  --effect-mask character-effect-mask.png \
+  --output-dir character-layers \
+  --name character \
+  --subject-grow 4 \
+  --subject-feather 0.8 \
+  --effect-feather 0.8 \
+  --overlap-policy reconstruct \
+  --reconstruct-max-gap 256 \
+  --qa-subject-offset-y -8 \
+  --json
+```
+
+遮罩规则：
+
+- 主体遮罩要保守覆盖主体边缘和抗锯齿像素；使用 `--subject-grow 2–6` 防止脸部、服装或物体边缘落入特效层。
+- 特效遮罩只描述期望的特效区域。主体遮挡了连续波纹时，遮罩可以覆盖被遮挡区域，由重建策略补全。
+- 不得用“源图 Alpha 减主体 Alpha”直接产生特效层，这会把主体边缘碎片分配给特效。
+- 遮罩尺寸必须与源图完全一致。源图必须包含 Alpha 通道。
+
+重叠策略：
+
+- `subject`：主体拥有重叠像素，适合不需要补全的阴影或装饰，默认使用。
+- `effect`：特效拥有重叠像素，只用于明确位于主体前方的效果。
+- `error`：发现任何遮罩重叠就失败，适合严格互斥图层。
+- `reconstruct`：主体保留原像素，特效在重叠区域按同一扫描行左右可见像素插值；只用于水平连续的波纹、光环和地面光效。
+
+脚本输出主体层、特效层、处理后遮罩、分层 manifest 和 QA 图。QA 同时展示原位合成和主体最大位移状态，并覆盖浅色、深色背景。默认未分配源像素不得超过 `5%`；超限时修正遮罩，不要提高阈值绕过。
 
 ## 工作流 A：确定性分层动画
 
@@ -236,6 +273,7 @@ python .agent/skills/ui-mockup-gen/scripts/build_animation_assets.py \
 7. 最后一帧到第一帧没有额外停顿或异常跳变。
 8. 深色、浅色和项目背景下无彩边、Alpha 孔洞。
 9. Manifest、spritesheet 和实际帧数、尺寸、时长一致。
+10. 合并素材分层后，主体最大位移状态下原位置没有主体颜色残片。
 
 质量门禁失败时停止交付。不要通过扩大画布、降低 Alpha 阈值或启用 `--allow-scale-drift` 掩盖角色重绘问题。
 

@@ -11,7 +11,7 @@
   "layers": [
     {
       "id": "ground-effect",
-      "file": "./layers/xiaolin-ripple.png",
+      "file": "./layers/xiaolin-effect.png",
       "anchor": {
         "x": 0.5,
         "y": 0.86

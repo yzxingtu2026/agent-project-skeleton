@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "source": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-ripple.png",
+  "input_masks": {
+    "subject": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layer-masks/xiaolin-subject-mask.png",
+    "effect": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layer-masks/xiaolin-effect-mask.png"
+  },
+  "size": {
+    "width": 778,
+    "height": 726
+  },
+  "policy": "reconstruct",
+  "parameters": {
+    "subject_grow": 4,
+    "effect_grow": 0,
+    "subject_feather": 0.8,
+    "effect_feather": 0.8,
+    "ownership_threshold": 16,
+    "reconstruct_max_gap": 400,
+    "max_unassigned_ratio": 0.05
+  },
+  "metrics": {
+    "source_pixels": 234605,
+    "subject_pixels": 180035,
+    "effect_pixels": 70668,
+    "mask_overlap_pixels": 17185,
+    "reconstructed_pixels": 16526,
+    "unassigned_source_pixels": 4481,
+    "unassigned_source_ratio": 0.0191
+  },
+  "files": {
+    "subject": "xiaolin-subject.png",
+    "effect": "xiaolin-effect.png",
+    "subject_mask": "xiaolin-subject-mask.png",
+    "effect_mask": "xiaolin-effect-mask.png",
+    "qa": "xiaolin-layers-qa.png"
+  }
+}

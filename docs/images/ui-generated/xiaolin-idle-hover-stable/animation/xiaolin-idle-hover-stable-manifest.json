@@ -38,20 +38,20 @@
       "height": 726,
       "duration_ms": 83,
       "content_bbox": {
-        "left": 32,
+        "left": 34,
         "top": 32,
-        "right": 746,
-        "bottom": 692
+        "right": 744,
+        "bottom": 691
       },
       "centroid": {
         "x": 392.71,
-        "y": 396.17
+        "y": 397.3
       },
-      "alpha_coverage": 0.3387,
+      "alpha_coverage": 0.3404,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -86,18 +86,18 @@
       "content_bbox": {
         "left": 23,
         "top": 28,
-        "right": 757,
-        "bottom": 692
+        "right": 755,
+        "bottom": 691
       },
       "centroid": {
-        "x": 392.74,
-        "y": 391.79
+        "x": 392.71,
+        "y": 393.37
       },
-      "alpha_coverage": 0.3375,
+      "alpha_coverage": 0.3399,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -130,20 +130,20 @@
       "height": 726,
       "duration_ms": 83,
       "content_bbox": {
-        "left": 12,
+        "left": 13,
         "top": 25,
-        "right": 767,
-        "bottom": 692
+        "right": 766,
+        "bottom": 691
       },
       "centroid": {
-        "x": 392.76,
-        "y": 387.71
+        "x": 392.73,
+        "y": 389.76
       },
-      "alpha_coverage": 0.3356,
+      "alpha_coverage": 0.3387,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -178,18 +178,18 @@
       "content_bbox": {
         "left": 5,
         "top": 24,
-        "right": 775,
-        "bottom": 693
+        "right": 773,
+        "bottom": 691
       },
       "centroid": {
-        "x": 392.78,
-        "y": 385.38
+        "x": 392.75,
+        "y": 387.6
       },
-      "alpha_coverage": 0.3337,
+      "alpha_coverage": 0.337,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -222,20 +222,20 @@
       "height": 726,
       "duration_ms": 83,
       "content_bbox": {
-        "left": 12,
+        "left": 13,
         "top": 25,
-        "right": 767,
-        "bottom": 692
+        "right": 766,
+        "bottom": 691
       },
       "centroid": {
-        "x": 392.76,
-        "y": 387.71
+        "x": 392.73,
+        "y": 389.76
       },
-      "alpha_coverage": 0.3356,
+      "alpha_coverage": 0.3387,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -270,18 +270,18 @@
       "content_bbox": {
         "left": 23,
         "top": 28,
-        "right": 757,
-        "bottom": 692
+        "right": 755,
+        "bottom": 691
       },
       "centroid": {
-        "x": 392.74,
-        "y": 391.79
+        "x": 392.71,
+        "y": 393.37
       },
-      "alpha_coverage": 0.3375,
+      "alpha_coverage": 0.3399,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -314,20 +314,20 @@
       "height": 726,
       "duration_ms": 83,
       "content_bbox": {
-        "left": 32,
+        "left": 34,
         "top": 32,
-        "right": 746,
-        "bottom": 692
+        "right": 744,
+        "bottom": 691
       },
       "centroid": {
         "x": 392.71,
-        "y": 396.17
+        "y": 397.3
       },
-      "alpha_coverage": 0.3387,
+      "alpha_coverage": 0.3404,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -360,20 +360,20 @@
       "height": 726,
       "duration_ms": 83,
       "content_bbox": {
-        "left": 43,
+        "left": 45,
         "top": 36,
-        "right": 735,
-        "bottom": 693
+        "right": 734,
+        "bottom": 691
       },
       "centroid": {
-        "x": 392.64,
-        "y": 400.13
+        "x": 392.7,
+        "y": 401.17
       },
-      "alpha_coverage": 0.3392,
+      "alpha_coverage": 0.3408,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -408,18 +408,18 @@
       "content_bbox": {
         "left": 55,
         "top": 39,
-        "right": 725,
-        "bottom": 693
+        "right": 723,
+        "bottom": 691
       },
       "centroid": {
-        "x": 392.62,
-        "y": 403.43
+        "x": 392.69,
+        "y": 404.36
       },
-      "alpha_coverage": 0.3401,
+      "alpha_coverage": 0.3415,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -454,18 +454,18 @@
       "content_bbox": {
         "left": 62,
         "top": 40,
-        "right": 718,
-        "bottom": 693
+        "right": 716,
+        "bottom": 691
       },
       "centroid": {
-        "x": 392.61,
-        "y": 405.01
+        "x": 392.68,
+        "y": 405.87
       },
-      "alpha_coverage": 0.341,
+      "alpha_coverage": 0.3424,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -500,18 +500,18 @@
       "content_bbox": {
         "left": 55,
         "top": 39,
-        "right": 725,
-        "bottom": 693
+        "right": 723,
+        "bottom": 691
       },
       "centroid": {
-        "x": 392.62,
-        "y": 403.43
+        "x": 392.69,
+        "y": 404.36
       },
-      "alpha_coverage": 0.3401,
+      "alpha_coverage": 0.3415,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,
@@ -544,20 +544,20 @@
       "height": 726,
       "duration_ms": 83,
       "content_bbox": {
-        "left": 43,
+        "left": 45,
         "top": 36,
-        "right": 735,
-        "bottom": 693
+        "right": 734,
+        "bottom": 691
       },
       "centroid": {
-        "x": 392.64,
-        "y": 400.13
+        "x": 392.7,
+        "y": 401.17
       },
-      "alpha_coverage": 0.3392,
+      "alpha_coverage": 0.3408,
       "layers": [
         {
           "id": "ground-effect",
-          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-ripple.png",
+          "file": "/Users/yang/Developer/Projects/Team/agent-project-skeleton/docs/images/ui-generated/xiaolin-idle-hover-stable/layers/xiaolin-effect.png",
           "transform": {
             "x": 0.0,
             "y": 0.0,

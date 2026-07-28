@@ -7,6 +7,16 @@ description: 通用视觉素材生成技能包。通过 OpenAI 兼容图像 API 
 
 面向前端全栈开发的模块化视觉素材技能包。当前提供 UI 原型图生成及工程实施交接能力；新增动画素材、透明 PNG 元素等能力时，继续以独立模块接入。
 
+## 脚本运行环境
+
+运行 `scripts/` 下的 Python 脚本前，必须在项目根目录创建或复用 `.venv` 虚拟环境，并按对应模块安装依赖。统一使用 `.venv/bin/python` 执行脚本，不要安装到系统 Python；Windows 使用 `.venv\Scripts\python.exe`。
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install openai Pillow
+.venv/bin/python .agent/skills/ui-mockup-gen/scripts/<script>.py --help
+```
+
 ## 模块索引
 
 执行任何具体能力前，必须先读取对应的完整模块文档。模块的使用方法、命令、实施流程和排障说明只保存在模块文档内。

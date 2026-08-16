@@ -94,6 +94,14 @@ function allWeComUserIds(membersConfig) {
   );
 }
 
+function memberDisplayNameForLogin(membersConfig, login) {
+  const member = membersConfig.members?.[login];
+  const name = compact(member?.name);
+  const role = compact(member?.role);
+  if (!name) return compact(login, "未知");
+  return role ? `${name}（${role}）` : name;
+}
+
 function shortSha(value) {
   return compact(value).slice(0, 7);
 }
@@ -120,7 +128,7 @@ function buildMessage({ membersConfig }) {
       `仓库：${markdownEscape(repository)}`,
       `分支：main`,
       `提交：${markdownEscape(shortSha(sha) || "未知")}`,
-      `触发人：${markdownEscape(actor)}`,
+      `触发人：${markdownEscape(memberDisplayNameForLogin(membersConfig, actor))}`,
       "",
       `[查看提交](${compareUrl}) · [查看工作流](${runUrl})`,
     ].join("\n"),

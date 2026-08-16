@@ -7,7 +7,7 @@ members:
       email: "yz-yang04@users.noreply.github.com"
     notifications:
       wecom:
-        user_id: ""
+        user_id: "YangMingFeng"
   zhihengwugou:
     name: "宋志恒"
     role: "全栈开发"
@@ -16,7 +16,7 @@ members:
       email: "zhihengwugou@users.noreply.github.com"
     notifications:
       wecom:
-        user_id: ""
+        user_id: "SongZhiHeng"
   guodong711:
     name: "果冻"
     role: "测试专员"
@@ -25,7 +25,7 @@ members:
       email: "guodong711@users.noreply.github.com"
     notifications:
       wecom:
-        user_id: ""
+        user_id: "luohanyuan"
   yanghaifeng666:
     name: "杨海锋"
     role: "测试专员"
@@ -34,4 +34,4 @@ members:
       email: "yanghaifeng666@users.noreply.github.com"
     notifications:
       wecom:
-        user_id: ""
+        user_id: "yanghaifeng"

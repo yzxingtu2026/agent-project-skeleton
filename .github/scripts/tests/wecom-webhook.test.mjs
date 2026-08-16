@@ -140,5 +140,7 @@ test("main 更新通知将 GitHub 触发人映射为真实姓名", async () => {
   );
   const payload = JSON.parse(stdout);
 
-  assert.match(payload.markdown_v2.content, /触发人：杨明锋（PM项目经理）/);
+  assert.equal(payload.msgtype, "markdown");
+  assert.match(payload.markdown.content, /<@YangMingFeng>/);
+  assert.match(payload.markdown.content, /触发人：杨明锋（PM项目经理）/);
 });

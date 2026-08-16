@@ -171,6 +171,14 @@ function memberRoleForLogin(membersConfig, login) {
   return compact(memberForLogin(membersConfig, login)?.role);
 }
 
+function memberDisplayNameForLogin(membersConfig, login) {
+  const member = memberForLogin(membersConfig, login);
+  const name = compact(member?.name);
+  const role = compact(member?.role);
+  if (!name) return compact(login, "未知");
+  return role ? `${name}（${role}）` : name;
+}
+
 function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
@@ -373,7 +381,7 @@ function buildMessage({ config, membersConfig, eventName, payload }) {
     `仓库：${markdownEscape(repoName(payload))}`,
     `事件：${markdownEscape(actionText(eventName, action, payload))}`,
     `位置：${markdownEscape(issueOrPrLabel(eventName, item))}`,
-    `操作人：${markdownEscape(actorLogin(payload))}`,
+    `操作人：${markdownEscape(memberDisplayNameForLogin(membersConfig, actorLogin(payload)))}`,
   );
 
   const milestone = item?.milestone?.title ?? payload.milestone?.title;

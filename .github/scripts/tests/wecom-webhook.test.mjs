@@ -118,6 +118,29 @@ test("GitHub 协作通知 dry-run 输出企业微信 payload", async () => {
 
   assert.equal(payload.msgtype, "markdown_v2");
   assert.match(payload.markdown_v2.content, /GitHub Issue 分配/);
+  assert.match(payload.markdown_v2.content, /操作人：杨明锋（PM项目经理）/);
   assert.match(payload.markdown_v2.content, /未配置企业微信 userid/);
   assert.match(payload.markdown_v2.content, /issues\/5/);
+});
+
+test("main 更新通知将 GitHub 触发人映射为真实姓名", async () => {
+  const { stdout } = await execFileAsync(
+    process.execPath,
+    [".github/scripts/github-main-updated.mjs", "--dry-run"],
+    {
+      cwd: rootDir,
+      env: {
+        ...process.env,
+        GITHUB_REPOSITORY: "yzxingtu2026/agent-project-skeleton",
+        GITHUB_SHA: "abcdef123456",
+        GITHUB_ACTOR: "yz-yang04",
+        GITHUB_RUN_ID: "123",
+      },
+    },
+  );
+  const payload = JSON.parse(stdout);
+
+  assert.equal(payload.msgtype, "markdown");
+  assert.match(payload.markdown.content, /<@YangMingFeng>/);
+  assert.match(payload.markdown.content, /触发人：杨明锋（PM项目经理）/);
 });

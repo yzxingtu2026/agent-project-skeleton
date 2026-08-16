@@ -310,7 +310,7 @@ function titleForEvent(eventName, action, payload) {
   return "GitHub 通知";
 }
 
-function targetLoginsForEvent(config, membersConfig, eventName, action, payload) {
+function targetLoginsForEvent(config, membersConfig, eventName, action, payload, pullRequest) {
   const rules = config.rules ?? {};
   const explicitTargets = targetLoginsFromExplicitAssignment(config, eventName, action, payload);
   const relatedTargets = [];
@@ -322,13 +322,13 @@ function targetLoginsForEvent(config, membersConfig, eventName, action, payload)
 
     if (isPullRequestIssue(payload.issue)) {
       if (rules.mention_assignee !== false) {
-        relatedTargets.push(...loginsFromUsers(payload.issue?.assignees));
+        relatedTargets.push(...loginsFromUsers(pullRequest?.assignees ?? payload.issue?.assignees));
       }
       if (rules.mention_pr_reviewers_on_comment !== false) {
-        relatedTargets.push(...loginsFromUsers(payload.issue?.requested_reviewers));
+        relatedTargets.push(...loginsFromUsers(pullRequest?.requested_reviewers ?? payload.issue?.requested_reviewers));
       }
       if (rules.mention_pr_author_on_comment !== false) {
-        relatedTargets.push(payload.issue?.user?.login);
+        relatedTargets.push(pullRequest?.user?.login ?? payload.issue?.user?.login);
       }
     } else {
       if (rules.mention_issue_assignees_on_comment !== false) {
@@ -353,10 +353,17 @@ function targetLoginsForEvent(config, membersConfig, eventName, action, payload)
   ]);
 }
 
-function buildMessage({ config, membersConfig, eventName, payload }) {
+function buildMessage({ config, membersConfig, eventName, payload, pullRequest }) {
   const action = compact(payload.action);
   const item = issueLikeFromPayload(payload);
-  const targetLogins = unique(targetLoginsForEvent(config, membersConfig, eventName, action, payload));
+  const targetLogins = unique(targetLoginsForEvent(
+    config,
+    membersConfig,
+    eventName,
+    action,
+    payload,
+    pullRequest,
+  ));
   const mentionedUsers = unique(targetLogins.map((login) => wecomUserIdForLogin(membersConfig, login)));
   const targetDescriptions = targetLogins.map((login) => {
     const role = memberRoleForLogin(membersConfig, login);
@@ -455,6 +462,28 @@ async function githubJson(url, token) {
     throw new Error(`GitHub API 请求失败：HTTP ${response.status} ${responseText}`);
   }
   return JSON.parse(responseText);
+}
+
+async function pullRequestForIssueComment({ eventName, payload }) {
+  if (eventName !== "issue_comment" || !isPullRequestIssue(payload.issue)) {
+    return null;
+  }
+
+  const fixturePath = compact(process.env.NOTIFICATION_PULL_REQUEST_FIXTURE);
+  if (fixturePath) {
+    return fs.readFile(fixturePath, "utf8").then(JSON.parse);
+  }
+
+  const token = compact(process.env.GITHUB_TOKEN);
+  if (!token) {
+    throw new Error("缺少 GITHUB_TOKEN，无法补充 PR 评论关联成员。");
+  }
+
+  const pullRequestUrl = compact(payload.issue?.pull_request?.url);
+  if (!pullRequestUrl) {
+    throw new Error("PR 评论事件缺少 issue.pull_request.url。");
+  }
+  return githubJson(pullRequestUrl, token);
 }
 
 async function recentDebouncedItems({ config, eventName, action, payload }) {
@@ -585,7 +614,14 @@ async function main() {
     return;
   }
 
-  let message = buildMessage({ config, membersConfig, eventName, payload });
+  let pullRequest = null;
+  try {
+    pullRequest = await pullRequestForIssueComment({ eventName, payload });
+  } catch (error) {
+    console.warn(`PR 评论关联成员查询失败，使用 webhook 数据降级：${error.message}`);
+  }
+
+  let message = buildMessage({ config, membersConfig, eventName, payload, pullRequest });
   if (
     config.rules?.debounce_enabled !== false
     && process.env.NOTIFICATION_DISABLE_DEBOUNCE !== "1"

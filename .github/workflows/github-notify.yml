@@ -65,6 +65,7 @@ jobs:
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NOTIFICATION_DISABLE_DEBOUNCE: "1"
           WECOM_COLLAB_WEBHOOK: ${{ secrets.WECOM_COLLAB_WEBHOOK }}
         run: node .github/scripts/github-notify.mjs

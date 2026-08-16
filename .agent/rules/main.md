@@ -8,7 +8,7 @@
 4. **文档归位**：文档放 `docs/`；规则/规范变化要随代码或 PR 同步沉淀。
 5. **远端操作用 gh**：Issue、PR、CI、Release 优先用 GitHub CLI；不得把 token 写入仓库。
 6. **中文提交**：提交信息使用中文，说明关联 Issue 和变更目的。
-7. **团队信息源**：需要成员、角色、GitHub 邮箱或钉钉 ID 时，查询 `.agent/team/members.yml`。
+7. **团队信息源**：需要成员、角色、GitHub 邮箱或企业微信 userid 时，查询 `.agent/team/members.yml`。
 
 ## 开发硬约束
 

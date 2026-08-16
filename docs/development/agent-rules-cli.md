@@ -6,7 +6,7 @@
 
 - `.agent/rules/`：团队通用规则源。
 - `.agent/skills/`：通用技能源，首批包含 `qa-assist`。
-- `.agent/team/members.yml`：团队成员、GitHub、钉钉和提交邮箱映射。
+- `.agent/team/members.yml`：团队成员、GitHub、企业微信通知和提交邮箱映射。
 - `.agent/team/roles.yml`：团队角色说明和通用角色约束。
 - `.agent/adapters/`：不同厂商的输出路径和 frontmatter。
 - `.agent/templates/`：本地 `AGENTS.md`、`CLAUDE.md` 模板。

@@ -1,4 +1,4 @@
-name: DingTalk Notify Main Updated
+name: GitHub Main Updated Notify
 
 on:
   push:
@@ -23,6 +23,5 @@ jobs:
 
       - name: Send main updated notification
         env:
-          DINGTALK_COLLAB_WEBHOOK: ${{ secrets.DINGTALK_COLLAB_WEBHOOK }}
-          DINGTALK_COLLAB_SIGN_SECRET: ${{ secrets.DINGTALK_COLLAB_SIGN_SECRET }}
-        run: node .github/scripts/dingtalk-main-updated.mjs
+          WECOM_COLLAB_WEBHOOK: ${{ secrets.WECOM_COLLAB_WEBHOOK }}
+        run: node .github/scripts/github-main-updated.mjs

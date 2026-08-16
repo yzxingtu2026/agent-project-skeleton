@@ -1,0 +1,22 @@
+{
+  "action": "created",
+  "issue": {
+    "number": 12,
+    "title": "企业微信 PR 协作通知验证",
+    "html_url": "https://github.com/yzxingtu2026/agent-project-skeleton/pull/12",
+    "user": { "login": "yz-yang04" },
+    "assignees": [{ "login": "guodong711" }],
+    "pull_request": {
+      "url": "https://api.github.com/repos/yzxingtu2026/agent-project-skeleton/pulls/12"
+    }
+  },
+  "comment": {
+    "body": "请 @guodong711 核对评论通知。",
+    "html_url": "https://github.com/yzxingtu2026/agent-project-skeleton/pull/12#issuecomment-1"
+  },
+  "repository": {
+    "full_name": "yzxingtu2026/agent-project-skeleton",
+    "html_url": "https://github.com/yzxingtu2026/agent-project-skeleton"
+  },
+  "sender": { "login": "yz-yang04" }
+}

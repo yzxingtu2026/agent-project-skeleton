@@ -123,6 +123,53 @@ test("GitHub 协作通知 dry-run 输出企业微信 payload", async () => {
   assert.match(payload.markdown_v2.content, /issues\/5/);
 });
 
+test("PR 评论通过 PR 详情补充 requested reviewer", async () => {
+  const eventPath = path.join(rootDir, ".github/scripts/tests/fixtures/pr-comment.json");
+  const pullRequestPath = path.join(rootDir, ".github/scripts/tests/fixtures/pull-request.json");
+  const { stdout } = await execFileAsync(
+    process.execPath,
+    [".github/scripts/github-notify.mjs", "--dry-run"],
+    {
+      cwd: rootDir,
+      env: {
+        ...process.env,
+        GITHUB_EVENT_NAME: "issue_comment",
+        GITHUB_EVENT_PATH: eventPath,
+        NOTIFICATION_PULL_REQUEST_FIXTURE: pullRequestPath,
+      },
+    },
+  );
+  const payload = JSON.parse(stdout);
+
+  assert.equal(payload.msgtype, "markdown");
+  assert.match(payload.markdown.content, /<@luohanyuan>/);
+  assert.match(payload.markdown.content, /<@yanghaifeng>/);
+  assert.doesNotMatch(payload.markdown.content, /<@YangMingFeng>/);
+});
+
+test("PR 详情查询不可用时降级发送 webhook 已有目标", async () => {
+  const eventPath = path.join(rootDir, ".github/scripts/tests/fixtures/pr-comment.json");
+  const { stdout, stderr } = await execFileAsync(
+    process.execPath,
+    [".github/scripts/github-notify.mjs", "--dry-run"],
+    {
+      cwd: rootDir,
+      env: {
+        ...process.env,
+        GITHUB_EVENT_NAME: "issue_comment",
+        GITHUB_EVENT_PATH: eventPath,
+        GITHUB_TOKEN: "",
+        NOTIFICATION_PULL_REQUEST_FIXTURE: "",
+      },
+    },
+  );
+  const payload = JSON.parse(stdout);
+
+  assert.match(stderr, /使用 webhook 数据降级/);
+  assert.match(payload.markdown.content, /<@luohanyuan>/);
+  assert.doesNotMatch(payload.markdown.content, /<@yanghaifeng>/);
+});
+
 test("main 更新通知将 GitHub 触发人映射为真实姓名", async () => {
   const { stdout } = await execFileAsync(
     process.execPath,

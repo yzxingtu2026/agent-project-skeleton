@@ -1,9 +1,9 @@
-enabled: true
+enabled: false
 
 routes:
   default:
-    webhook_secret_name: DINGTALK_COLLAB_WEBHOOK
-    sign_secret_name: DINGTALK_COLLAB_SIGN_SECRET
+    provider: wecom
+    webhook_secret_name: WECOM_COLLAB_WEBHOOK
 
 members:
   source: .agent/team/members.yml

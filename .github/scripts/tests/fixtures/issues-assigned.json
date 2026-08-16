@@ -1,0 +1,16 @@
+{
+  "action": "assigned",
+  "assignee": { "login": "unmapped-user" },
+  "issue": {
+    "number": 5,
+    "title": "迁移企业微信通知",
+    "html_url": "https://github.com/yzxingtu2026/agent-project-skeleton/issues/5",
+    "user": { "login": "yz-yang04" },
+    "assignees": [{ "login": "unmapped-user" }]
+  },
+  "repository": {
+    "full_name": "yzxingtu2026/agent-project-skeleton",
+    "html_url": "https://github.com/yzxingtu2026/agent-project-skeleton"
+  },
+  "sender": { "login": "yz-yang04" }
+}

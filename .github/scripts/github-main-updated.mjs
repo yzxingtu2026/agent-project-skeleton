@@ -1,10 +1,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { postDingTalkMarkdown, resolveDingTalkWebhookUrl } from "./dingtalk-webhook.mjs";
+import { buildWeComPayload, postWeComMessage, resolveWeComWebhookUrl } from "./wecom-webhook.mjs";
 
 const rootDir = process.cwd();
 const membersPath = ".agent/team/members.yml";
+const configPath = ".github/notification.yml";
 
 function compact(value, fallback = "") {
   if (value === null || value === undefined) {
@@ -86,10 +87,10 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
 
-function allDingTalkUserIds(membersConfig) {
+function allWeComUserIds(membersConfig) {
   return unique(
     Object.values(membersConfig.members ?? {})
-      .map((member) => compact(member?.dingtalk?.user_id)),
+      .map((member) => compact(member?.notifications?.wecom?.user_id)),
   );
 }
 
@@ -106,14 +107,12 @@ function buildMessage({ membersConfig }) {
   const repoUrl = `${serverUrl}/${repository}`;
   const compareUrl = sha ? `${repoUrl}/commit/${sha}` : repoUrl;
   const runUrl = runId ? `${repoUrl}/actions/runs/${runId}` : repoUrl;
-  const atUserIds = allDingTalkUserIds(membersConfig);
-  const mentionLine = atUserIds.length > 0
-    ? `${atUserIds.map((userId) => `@${userId}`).join(" ")} main 分支已更新，请拉取最新代码。`
-    : "main 分支已更新，请团队成员拉取最新代码。";
+  const mentionUserIds = allWeComUserIds(membersConfig);
+  const mentionLine = "main 分支已更新，请团队成员拉取最新代码。";
 
   return {
     title: "GitHub main 分支更新",
-    text: [
+    markdown: [
       "## GitHub main 分支更新",
       "",
       mentionLine,
@@ -125,43 +124,31 @@ function buildMessage({ membersConfig }) {
       "",
       `[查看提交](${compareUrl}) · [查看工作流](${runUrl})`,
     ].join("\n"),
-    atUserIds,
+    mentionUserIds,
   };
 }
 
 async function main() {
-  const dryRun = process.argv.includes("--dry-run") || process.env.DINGTALK_NOTIFY_DRY_RUN === "1";
-  const membersConfig = await fs
-    .readFile(path.join(rootDir, membersPath), "utf8")
-    .then(parseSimpleYaml);
+  const dryRun = process.argv.includes("--dry-run") || process.env.NOTIFICATION_DRY_RUN === "1";
+  const [config, membersConfig] = await Promise.all([
+    fs.readFile(path.join(rootDir, configPath), "utf8").then(parseSimpleYaml),
+    fs.readFile(path.join(rootDir, membersPath), "utf8").then(parseSimpleYaml),
+  ]);
+  if (config.enabled === false && process.env.NOTIFICATION_FORCE_ENABLED !== "1" && !dryRun) {
+    console.log("跳过 main 分支更新通知：通知未启用。");
+    return;
+  }
   const message = buildMessage({ membersConfig });
 
   if (dryRun) {
-    console.log(JSON.stringify({
-      msgtype: "markdown",
-      markdown: {
-        title: message.title,
-        text: message.text,
-      },
-      at: {
-        atUserIds: message.atUserIds,
-        isAtAll: false,
-      },
-    }, null, 2));
+    console.log(JSON.stringify(buildWeComPayload(message), null, 2));
     return;
   }
 
-  const webhookUrl = resolveDingTalkWebhookUrl({
-    webhookSecretName: "DINGTALK_COLLAB_WEBHOOK",
-    signSecretName: "DINGTALK_COLLAB_SIGN_SECRET",
+  const webhookUrl = resolveWeComWebhookUrl({
+    webhookSecretName: "WECOM_COLLAB_WEBHOOK",
   });
-
-  await postDingTalkMarkdown({
-    webhookUrl,
-    title: message.title,
-    text: message.text,
-    atUserIds: message.atUserIds,
-  });
+  await postWeComMessage({ webhookUrl, payload: buildWeComPayload(message) });
   console.log("main 分支更新通知已发送。");
 }
 

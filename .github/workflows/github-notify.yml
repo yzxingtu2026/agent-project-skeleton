@@ -1,4 +1,4 @@
-name: DingTalk Notify GitHub Collaboration
+name: GitHub Collaboration Notify
 
 on:
   issues:
@@ -23,7 +23,7 @@ jobs:
       (github.event_name == 'issues' && github.event.action == 'assigned') ||
       (github.event_name == 'pull_request' && (github.event.action == 'assigned' || github.event.action == 'review_requested'))
     concurrency:
-      group: dingtalk-notify-${{ github.repository }}-${{ github.event_name }}-${{ github.event.action }}-${{ github.event.assignee.login || github.event.requested_reviewer.login || github.event.sender.login }}
+      group: github-notify-${{ github.repository }}-${{ github.event_name }}-${{ github.event.action }}-${{ github.event.assignee.login || github.event.requested_reviewer.login || github.event.sender.login }}
       cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
@@ -37,14 +37,13 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Send DingTalk notification
+      - name: Send WeCom notification
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_PATH: ${{ github.event_path }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DINGTALK_COLLAB_WEBHOOK: ${{ secrets.DINGTALK_COLLAB_WEBHOOK }}
-          DINGTALK_COLLAB_SIGN_SECRET: ${{ secrets.DINGTALK_COLLAB_SIGN_SECRET }}
-        run: node .github/scripts/dingtalk-notify.mjs
+          WECOM_COLLAB_WEBHOOK: ${{ secrets.WECOM_COLLAB_WEBHOOK }}
+        run: node .github/scripts/github-notify.mjs
 
   notify-immediate:
     if: >-
@@ -62,11 +61,10 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Send DingTalk notification
+      - name: Send WeCom notification
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_PATH: ${{ github.event_path }}
-          DINGTALK_NOTIFY_DISABLE_DEBOUNCE: "1"
-          DINGTALK_COLLAB_WEBHOOK: ${{ secrets.DINGTALK_COLLAB_WEBHOOK }}
-          DINGTALK_COLLAB_SIGN_SECRET: ${{ secrets.DINGTALK_COLLAB_SIGN_SECRET }}
-        run: node .github/scripts/dingtalk-notify.mjs
+          NOTIFICATION_DISABLE_DEBOUNCE: "1"
+          WECOM_COLLAB_WEBHOOK: ${{ secrets.WECOM_COLLAB_WEBHOOK }}
+        run: node .github/scripts/github-notify.mjs

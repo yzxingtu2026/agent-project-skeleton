@@ -1,19 +1,19 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { postDingTalkMarkdown, resolveDingTalkWebhookUrl } from "./dingtalk-webhook.mjs";
+import { buildWeComPayload, postWeComMessage, resolveWeComWebhookUrl } from "./wecom-webhook.mjs";
 
 const rootDir = process.cwd();
-const configPath = path.join(rootDir, ".github", "dingtalk-notify.yml");
+const configPath = path.join(rootDir, ".github", "notification.yml");
 const defaultMembersPath = ".agent/team/members.yml";
 
 function usage() {
   return [
     "用法：",
-    "  GITHUB_EVENT_NAME=<事件> GITHUB_EVENT_PATH=<payload.json> node .github/scripts/dingtalk-notify.mjs",
+    "  GITHUB_EVENT_NAME=<事件> GITHUB_EVENT_PATH=<payload.json> node .github/scripts/github-notify.mjs",
     "",
     "参数：",
-    "  --dry-run    只打印钉钉消息 payload，不发送。",
+    "  --dry-run    只打印企业微信消息 payload，不发送。",
   ].join("\n");
 }
 
@@ -133,7 +133,7 @@ function repoName(payload) {
 }
 
 function isEnabledEvent(config, eventName, action) {
-  if (config.enabled === false) {
+  if (config.enabled === false && process.env.NOTIFICATION_FORCE_ENABLED !== "1") {
     return false;
   }
   const eventConfig = config.events?.[eventName];
@@ -163,8 +163,8 @@ function memberForLogin(membersConfig, login) {
   return membersConfig.members?.[login] ?? null;
 }
 
-function dingtalkUserIdForLogin(membersConfig, login) {
-  return compact(memberForLogin(membersConfig, login)?.dingtalk?.user_id);
+function wecomUserIdForLogin(membersConfig, login) {
+  return compact(memberForLogin(membersConfig, login)?.notifications?.wecom?.user_id);
 }
 
 function memberRoleForLogin(membersConfig, login) {
@@ -349,15 +349,15 @@ function buildMessage({ config, membersConfig, eventName, payload }) {
   const action = compact(payload.action);
   const item = issueLikeFromPayload(payload);
   const targetLogins = unique(targetLoginsForEvent(config, membersConfig, eventName, action, payload));
-  const mentionedUsers = unique(targetLogins.map((login) => dingtalkUserIdForLogin(membersConfig, login)));
+  const mentionedUsers = unique(targetLogins.map((login) => wecomUserIdForLogin(membersConfig, login)));
   const targetDescriptions = targetLogins.map((login) => {
     const role = memberRoleForLogin(membersConfig, login);
     return role ? `${login}（${role}）` : login;
   });
   const mentionLine = mentionedUsers.length > 0
-    ? `${mentionedUsers.map((userId) => `@${userId}`).join(" ")} 请关注这条 GitHub 协作通知。`
+    ? "请相关成员关注并处理这条 GitHub 协作通知。"
     : targetLogins.length > 0
-      ? `目标 GitHub 用户：${targetDescriptions.map(markdownEscape).join("、")}（未配置钉钉 userId，未 @）。`
+      ? `目标 GitHub 用户：${targetDescriptions.map(markdownEscape).join("、")}（未配置企业微信 userid，未提醒）。`
       : "";
 
   const lines = [
@@ -398,8 +398,8 @@ function buildMessage({ config, membersConfig, eventName, payload }) {
 
   return {
     title: titleForEvent(eventName, action, payload),
-    text: lines.join("\n"),
-    atUserIds: mentionedUsers,
+    markdown: lines.join("\n"),
+    mentionUserIds: mentionedUsers,
   };
 }
 
@@ -450,7 +450,7 @@ async function githubJson(url, token) {
 }
 
 async function recentDebouncedItems({ config, eventName, action, payload }) {
-  const fixturePath = compact(process.env.DINGTALK_NOTIFY_DEBOUNCE_FIXTURE);
+  const fixturePath = compact(process.env.NOTIFICATION_DEBOUNCE_FIXTURE);
   if (fixturePath) {
     return fs.readFile(fixturePath, "utf8").then(JSON.parse);
   }
@@ -508,16 +508,16 @@ function buildDebouncedMessage({ config, membersConfig, eventName, payload, item
 
   const action = compact(payload.action);
   const targetLogins = debouncedTargetLogins({ config, eventName, action, payload, items });
-  const mentionedUsers = unique(targetLogins.map((login) => dingtalkUserIdForLogin(membersConfig, login)));
+  const mentionedUsers = unique(targetLogins.map((login) => wecomUserIdForLogin(membersConfig, login)));
   const targetDescriptions = targetLogins.map((login) => {
     const role = memberRoleForLogin(membersConfig, login);
     return role ? `${login}（${role}）` : login;
   });
   const title = eventName === "issues" ? "GitHub Issue 分配汇总" : "GitHub PR 协作通知汇总";
   const mentionLine = mentionedUsers.length > 0
-    ? `${mentionedUsers.map((userId) => `@${userId}`).join(" ")} 请关注这批 GitHub 协作通知。`
+    ? "请相关成员关注并处理这批 GitHub 协作通知。"
     : targetLogins.length > 0
-      ? `目标 GitHub 用户：${targetDescriptions.map(markdownEscape).join("、")}（未配置钉钉 userId，未 @）。`
+      ? `目标 GitHub 用户：${targetDescriptions.map(markdownEscape).join("、")}（未配置企业微信 userid，未提醒）。`
       : "";
   const lines = [
     `## ${title}`,
@@ -538,8 +538,8 @@ function buildDebouncedMessage({ config, membersConfig, eventName, payload, item
 
   return {
     title,
-    text: lines.join("\n"),
-    atUserIds: mentionedUsers,
+    markdown: lines.join("\n"),
+    mentionUserIds: mentionedUsers,
   };
 }
 
@@ -549,7 +549,7 @@ async function main() {
     return;
   }
 
-  const dryRun = hasFlag("--dry-run") || process.env.DINGTALK_NOTIFY_DRY_RUN === "1";
+  const dryRun = hasFlag("--dry-run") || process.env.NOTIFICATION_DRY_RUN === "1";
   const eventName = compact(process.env.GITHUB_EVENT_NAME);
   const eventPath = compact(process.env.GITHUB_EVENT_PATH);
   if (!eventName || !eventPath) {
@@ -565,24 +565,24 @@ async function main() {
 
   const action = compact(payload.action);
   if (!isEnabledEvent(config, eventName, action)) {
-    console.log(`跳过钉钉通知：${eventName}.${action} 未启用。`);
+    console.log(`跳过协作通知：${eventName}.${action} 未启用。`);
     return;
   }
   if (isIgnoredActor(config, payload)) {
-    console.log(`跳过钉钉通知：操作人 ${actorLogin(payload)} 在忽略名单中。`);
+    console.log(`跳过协作通知：操作人 ${actorLogin(payload)} 在忽略名单中。`);
     return;
   }
   if (shouldSkipMergedPullRequestClose(config, eventName, action, payload)) {
-    console.log("跳过钉钉通知：已合并 PR 的关闭事件由专用合并通知 workflow 处理。");
+    console.log("跳过协作通知：已合并 PR 的关闭事件由专用合并通知 workflow 处理。");
     return;
   }
 
   let message = buildMessage({ config, membersConfig, eventName, payload });
   if (
     config.rules?.debounce_enabled !== false
-    && process.env.DINGTALK_NOTIFY_DISABLE_DEBOUNCE !== "1"
+    && process.env.NOTIFICATION_DISABLE_DEBOUNCE !== "1"
     && isDebounceableEvent(eventName, action)
-    && (!dryRun || process.env.DINGTALK_NOTIFY_DEBOUNCE_FIXTURE)
+    && (!dryRun || process.env.NOTIFICATION_DEBOUNCE_FIXTURE)
   ) {
     const waitSeconds = dryRun ? 0 : Number(config.rules?.debounce_wait_seconds ?? 45);
     if (waitSeconds > 0) {
@@ -598,32 +598,15 @@ async function main() {
   }
 
   if (dryRun) {
-    console.log(JSON.stringify({
-      msgtype: "markdown",
-      markdown: {
-        title: message.title,
-        text: message.text,
-      },
-      at: {
-        atUserIds: message.atUserIds,
-        isAtAll: false,
-      },
-    }, null, 2));
+    console.log(JSON.stringify(buildWeComPayload(message), null, 2));
     return;
   }
 
-  const url = resolveDingTalkWebhookUrl({
+  const url = resolveWeComWebhookUrl({
     webhookSecretName: compact(config.routes?.default?.webhook_secret_name),
-    signSecretName: compact(config.routes?.default?.sign_secret_name),
   });
-
-  await postDingTalkMarkdown({
-    webhookUrl: url,
-    title: message.title,
-    text: message.text,
-    atUserIds: message.atUserIds,
-  });
-  console.log("钉钉通知已发送。");
+  await postWeComMessage({ webhookUrl: url, payload: buildWeComPayload(message) });
+  console.log("企业微信通知已发送。");
 }
 
 main().catch((error) => {

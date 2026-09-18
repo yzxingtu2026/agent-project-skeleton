@@ -1,4 +1,4 @@
-const { COMMANDS } = require("./constants");
+const { COMMANDS, VENDORS } = require("./constants");
 
 function parseOptions(args) {
   const options = {};
@@ -14,30 +14,6 @@ function parseOptions(args) {
   return options;
 }
 
-function getTargets(args, repo) {
-  const targetArg = args.find((arg) => arg.startsWith("--target="));
-  if (!targetArg) return inferExistingTargets(repo);
-
-  const raw = targetArg.slice("--target=".length);
-  const supported = ["qoder", "cursor"];
-  if (raw === "all" || raw === "auto") return new Set(["qoder", "cursor"]);
-  const selected = raw.split(",").map((item) => item.trim()).filter(Boolean);
-  const normalized = [];
-  for (const target of selected) {
-    if (!supported.includes(target)) throw new Error(`当前命令暂不支持目标：${target}。AGENTS.md/CLAUDE.md 请使用 init 生成。`);
-    normalized.push(target);
-  }
-  return new Set(normalized);
-}
-
-function inferExistingTargets(repo) {
-  const targets = new Set();
-  if (repo.exists(".qoder")) targets.add("qoder");
-  if (repo.exists(".cursor")) targets.add("cursor");
-  if (targets.size) return targets;
-  throw new Error("未发现已初始化的厂商目录。请先运行 init 选择厂商，或显式指定参数：agent-rules sync --target=qoder,cursor");
-}
-
 function isHelpCommand(command) {
   return command === "help" || command === "--help" || command === "-h";
 }
@@ -47,10 +23,21 @@ function isKnownCommand(command) {
 }
 
 function printHelp() {
+  const vendors = VENDORS.join(",");
   console.log(`用法：
-  agent-rules init [--agents=codex,claude,cursor,qoder --name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com]
-  agent-rules sync [--target=qoder,cursor|all]
-  agent-rules doctor [--target=qoder,cursor|all]
+  agent-rules init    [--agents=${vendors}] [--non-interactive] [--name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com] [--force] [--json]
+  agent-rules sync    [--target=${vendors}|all] [--json]
+  agent-rules doctor  [--target=${vendors}|all] [--json]
+  agent-rules status  [--agents=${vendors}|all] [--json]
+  agent-rules ensure  [--agents=${vendors}|all] [--non-interactive] [--json]
+
+说明：
+  --agents 与 --target 共用同一套厂商命名（codex/claude/cursor/qoder）。
+  codex 管理根目录 AGENTS.md，claude 管理 CLAUDE.md，cursor/qoder 管理各自规则与技能目录。
+  --json 时 stdout 只输出最终 JSON，人类可读日志改走 stderr。
+
+退出码：
+  0 成功（含无需变更）  1 未预期错误  2 配置/身份不完整  3 校验或一致性检查未通过
 
 本地开发可用：node .agent/tools/agent-rules/cli.js <命令>`);
 }
@@ -60,8 +47,6 @@ function toCamelCase(value) {
 }
 
 module.exports = {
-  getTargets,
-  inferExistingTargets,
   isHelpCommand,
   isKnownCommand,
   parseOptions,

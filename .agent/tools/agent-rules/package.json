@@ -1,13 +1,14 @@
 {
   "name": "@yz-xingtu/agent-rules",
-  "version": "0.1.1",
-  "description": "将团队 AI Agent 规则和技能同步到各厂商规则目录。",
+  "version": "0.2.0",
+  "description": "将团队 AI Agent 规则和技能同步到各厂商规则目录，并为自动化 Agent 提供幂等、机器可读的接口。",
   "main": "./src/cli.js",
   "bin": {
     "agent-rules": "cli.js"
   },
   "scripts": {
-    "check": "node --check cli.js && node --check src/cli.js && node --check src/commands.js && node --check src/init.js && node --check src/local-entries.js && node --check src/render.js"
+    "check": "node scripts/check-syntax.js",
+    "test": "node --test"
   },
   "files": [
     "README.md",

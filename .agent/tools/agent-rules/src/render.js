@@ -10,8 +10,8 @@ function renderAll(repo, targets) {
 
   for (const rule of rulesConfig.rules) {
     const source = repo.readText(rule.source).trimEnd() + "\n";
-    if (targets.has("qoder") && rule.qoder) outputs.push(renderRule(rule.qoder.path, rule.qoder.frontmatter, source));
-    if (targets.has("cursor") && rule.cursor) outputs.push(renderRule(rule.cursor.path, rule.cursor.frontmatter, source));
+    if (targets.has("qoder") && rule.qoder) outputs.push(renderRule("qoder", rule.qoder.path, rule.qoder.frontmatter, source));
+    if (targets.has("cursor") && rule.cursor) outputs.push(renderRule("cursor", rule.cursor.path, rule.cursor.frontmatter, source));
   }
 
   for (const skill of skillsConfig.skills) {
@@ -21,8 +21,9 @@ function renderAll(repo, targets) {
   return outputs;
 }
 
-function renderRule(outputPath, frontmatter, body) {
+function renderRule(target, outputPath, frontmatter, body) {
   return {
+    target,
     path: outputPath,
     content: toFrontmatter(frontmatter) + GENERATED_NOTICE + body,
   };
@@ -37,6 +38,7 @@ function renderQoderSkill(repo, skill) {
     description: meta.description,
   });
   return {
+    target: "qoder",
     path: skill.qoder.path,
     content: frontmatter + GENERATED_NOTICE + instructions,
   };

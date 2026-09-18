@@ -4,32 +4,6 @@ const { gitRemoteUrl } = require("./git");
 const { renderTemplate } = require("./template");
 const { findTeamMember, renderCommonConstraints, renderRoleGuide } = require("./team");
 
-function writeLocalEntries(repo, profile, agents, force) {
-  const rendered = renderLocalEntries(repo, profile);
-  repo.writeFileGuarded("AGENTS.md", rendered.agents, force);
-  console.log("已生成 AGENTS.md");
-  if (agents.has("claude")) {
-    repo.writeFileGuarded("CLAUDE.md", rendered.claude, force);
-    console.log("已生成 CLAUDE.md");
-  }
-}
-
-function refreshLocalEntries(repo) {
-  if (!repo.exists("AGENTS.md")) {
-    throw new Error("未发现 AGENTS.md。请先运行 agent-rules init 配置当前使用者，再运行 sync。");
-  }
-
-  const profile = readProfileFromAgents(repo);
-  const rendered = renderLocalEntries(repo, profile);
-  repo.writeFile("AGENTS.md", rendered.agents);
-  console.log("已刷新 AGENTS.md");
-
-  if (repo.exists("CLAUDE.md")) {
-    repo.writeFile("CLAUDE.md", rendered.claude);
-    console.log("已刷新 CLAUDE.md");
-  }
-}
-
 function renderLocalEntries(repo, profile) {
   const repository = inferRepositoryInfo(repo);
   const replacements = {
@@ -50,6 +24,16 @@ function renderLocalEntries(repo, profile) {
 }
 
 function readProfileFromAgents(repo) {
+  const { profile, missingFields } = parseProfileFromAgents(repo);
+  if (missingFields.length) {
+    throw new Error("AGENTS.md 中缺少当前使用者信息。请重新运行 agent-rules init。");
+  }
+  return profile;
+}
+
+// 非抛错版本：解析 AGENTS.md 中的操作者身份，返回缺失字段列表。
+// 供 status/ensure 判断初始化状态与身份完整性。
+function parseProfileFromAgents(repo) {
   const profile = {
     name: "",
     githubUsername: "",
@@ -57,6 +41,9 @@ function readProfileFromAgents(repo) {
     role: DEFAULT_ROLE,
     language: DEFAULT_LANGUAGE,
   };
+  if (!repo.exists("AGENTS.md")) {
+    return { profile, missingFields: ["name", "githubUsername", "githubEmail"], present: false };
+  }
   const content = repo.readText("AGENTS.md");
   const fields = {
     "姓名": "name",
@@ -74,15 +61,18 @@ function readProfileFromAgents(repo) {
     profile[key] = stripInlineCode(match[2].trim());
   }
 
-  if (!profile.name || !profile.githubUsername || !profile.githubEmail) {
-    throw new Error("AGENTS.md 中缺少当前使用者信息。请重新运行 agent-rules init。");
-  }
+  const missingFields = [];
+  if (!profile.name) missingFields.push("name");
+  if (!profile.githubUsername) missingFields.push("githubUsername");
+  if (!profile.githubEmail) missingFields.push("githubEmail");
 
-  const matchedMember = findTeamMember(repo, profile);
-  if (matchedMember) {
-    profile.role = matchedMember.role || profile.role;
+  if (!missingFields.length) {
+    const matchedMember = findTeamMember(repo, profile);
+    if (matchedMember) {
+      profile.role = matchedMember.role || profile.role;
+    }
   }
-  return profile;
+  return { profile, missingFields, present: true };
 }
 
 function inferRepositoryInfo(repo) {
@@ -122,8 +112,7 @@ function stripInlineCode(value) {
 module.exports = {
   inferRepositoryInfo,
   parseGitHubRemote,
+  parseProfileFromAgents,
   readProfileFromAgents,
-  refreshLocalEntries,
   renderLocalEntries,
-  writeLocalEntries,
 };

@@ -1,4 +1,4 @@
-const GENERATED_NOTICE = "<!-- 由 .agent/tools/agent-rules 生成。请修改 .agent/rules/、.agent/skills/、.agent/team/、.agent/adapters/、.agent/templates/ 下的源文件。 -->\n\n";
+const GENERATED_NOTICE = "<!-- 由 .agents/tools/agent-rules 生成。请修改 .agents/rules/、.agents/skills/、.agents/team/、.agents/adapters/、.agents/templates/ 下的源文件。 -->\n\n";
 const LOCAL_NOTICE = "<!-- 由 agent-rules 生成。本地文件已被 Git 忽略；如需更换身份信息，请重新运行 init。 -->\n\n";
 const COMMANDS = new Set(["init", "sync", "doctor", "status", "ensure"]);
 const DEFAULT_LANGUAGE = "简体中文";
@@ -10,7 +10,7 @@ const SCHEMA_VERSION = "1.0";
 // 稳定退出码：调用方（含自动化 Agent）依赖这些数值判断结果。
 const EXIT_CODES = {
   ok: 0, // 成功，包含“已执行变更”和“无需变更”
-  error: 1, // 未预期错误，例如缺少 .agent 工作区
+  error: 1, // 未预期错误，例如缺少 .agents 工作区
   configIncomplete: 2, // 操作者身份或必填配置不完整
   checkFailed: 3, // 源校验失败或生成物一致性检查未通过
 };

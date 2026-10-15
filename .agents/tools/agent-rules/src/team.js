@@ -1,11 +1,11 @@
 const { readSimpleYaml } = require("./simple-yaml");
 
 function readTeamMembers(repo) {
-  return readSimpleYaml(repo, ".agent/team/members.yml").members || {};
+  return readSimpleYaml(repo, ".agents/team/members.yml").members || {};
 }
 
 function readTeamRoles(repo) {
-  return readSimpleYaml(repo, ".agent/team/roles.yml");
+  return readSimpleYaml(repo, ".agents/team/roles.yml");
 }
 
 function findTeamMember(repo, profile) {

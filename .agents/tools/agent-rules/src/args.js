@@ -39,7 +39,7 @@ function printHelp() {
 退出码：
   0 成功（含无需变更）  1 未预期错误  2 配置/身份不完整  3 校验或一致性检查未通过
 
-本地开发可用：node .agent/tools/agent-rules/cli.js <命令>`);
+本地开发可用：node .agents/tools/agent-rules/cli.js <命令>`);
 }
 
 function toCamelCase(value) {

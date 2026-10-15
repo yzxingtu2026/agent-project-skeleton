@@ -5,7 +5,7 @@ function fail(message) {
   throw new CliError(message, {
     code: "check_failed",
     exitCode: 3,
-    fix: "请修正 .agent/team/ 下的源文件后重试。",
+    fix: "请修正 .agents/team/ 下的源文件后重试。",
   });
 }
 
@@ -15,7 +15,7 @@ function validateSources(repo) {
 }
 
 function validateTeamMembers(repo) {
-  const membersPath = ".agent/team/members.yml";
+  const membersPath = ".agents/team/members.yml";
   const members = readTeamMembers(repo);
   const entries = Object.entries(members);
   if (!entries.length) fail(`${membersPath} 至少需要定义一名团队成员`);
@@ -30,7 +30,7 @@ function validateTeamMembers(repo) {
 }
 
 function validateTeamRoles(repo) {
-  const rolesPath = ".agent/team/roles.yml";
+  const rolesPath = ".agents/team/roles.yml";
   const roles = readTeamRoles(repo).roles || {};
   if (!Object.keys(roles).length) fail(`${rolesPath} 至少需要定义一个团队角色`);
   for (const [key, role] of Object.entries(roles)) {

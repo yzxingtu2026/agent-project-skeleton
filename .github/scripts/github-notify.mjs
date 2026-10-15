@@ -5,7 +5,7 @@ import { buildWeComPayload, postWeComMessage, resolveWeComWebhookUrl } from "./w
 
 const rootDir = process.cwd();
 const configPath = path.join(rootDir, ".github", "notification.yml");
-const defaultMembersPath = ".agent/team/members.yml";
+const defaultMembersPath = ".agents/team/members.yml";
 
 function usage() {
   return [

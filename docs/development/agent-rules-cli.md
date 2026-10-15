@@ -1,15 +1,15 @@
 # Agent Rules CLI
 
-`agent-rules` 从仓库根目录的 `.agent/` 元结构生成各 AI 编程工具可识别的规则和技能文件，避免手工维护多套重复目录。
+`agent-rules` 从仓库根目录的 `.agents/` 元结构生成各 AI 编程工具可识别的规则和技能文件，避免手工维护多套重复目录。
 
 ## 源结构
 
-- `.agent/rules/`：团队通用规则源。
-- `.agent/skills/`：通用技能源，首批包含 `qa-assist`。
-- `.agent/team/members.yml`：团队成员、GitHub、企业微信通知和提交邮箱映射。
-- `.agent/team/roles.yml`：团队角色说明和通用角色约束。
-- `.agent/adapters/`：不同厂商的输出路径和 frontmatter。
-- `.agent/templates/`：本地 `AGENTS.md`、`CLAUDE.md` 模板。
+- `.agents/rules/`：团队通用规则源。
+- `.agents/skills/`：通用技能源，首批包含 `qa-assist`。
+- `.agents/team/members.yml`：团队成员、GitHub、企业微信通知和提交邮箱映射。
+- `.agents/team/roles.yml`：团队角色说明和通用角色约束。
+- `.agents/adapters/`：不同厂商的输出路径和 frontmatter。
+- `.agents/templates/`：本地 `AGENTS.md`、`CLAUDE.md` 模板。
 
 ## 命令
 
@@ -67,7 +67,7 @@ agent-rules init --non-interactive --agents=codex,qoder \
   --name="张三" --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com --json
 ```
 
-非交互模式不读取 stdin。操作者身份按优先级解析：**显式参数 > `.agent/team/members.yml` 匹配 > 本地 Git 配置 > `gh` 当前登录身份**。信息不足时返回结构化错误（`code=config_incomplete`），列出缺失字段与对应参数，不静默猜测或写入错误身份。离线 / CI 环境可设 `AGENT_RULES_NO_GH=1` 禁用 `gh` 探测，保证行为可确定。
+非交互模式不读取 stdin。操作者身份按优先级解析：**显式参数 > `.agents/team/members.yml` 匹配 > 本地 Git 配置 > `gh` 当前登录身份**。信息不足时返回结构化错误（`code=config_incomplete`），列出缺失字段与对应参数，不静默猜测或写入错误身份。离线 / CI 环境可设 `AGENT_RULES_NO_GH=1` 禁用 `gh` 探测，保证行为可确定。
 
 ### JSON 输出与退出码
 
@@ -78,7 +78,7 @@ agent-rules init --non-interactive --agents=codex,qoder \
 | 退出码 | 含义 | 对应 `status` |
 | --- | --- | --- |
 | `0` | 成功（含“已变更”与“无需变更”） | `ok` / `changed` / `current` |
-| `1` | 未预期错误（如缺少 `.agent` 工作区） | `error` |
+| `1` | 未预期错误（如缺少 `.agents` 工作区） | `error` |
 | `2` | 配置或操作者身份不完整 | `config_incomplete` |
 | `3` | 源校验失败或生成物一致性检查未通过 | `check_failed` |
 
@@ -87,19 +87,19 @@ agent-rules init --non-interactive --agents=codex,qoder \
 ## 本地开发
 
 ```bash
-node .agent/tools/agent-rules/cli.js <命令>
-cd .agent/tools/agent-rules && npm run check && npm test
+node .agents/tools/agent-rules/cli.js <命令>
+cd .agents/tools/agent-rules && npm run check && npm test
 ```
 
 `npm run check` 对 `cli.js` 与 `src/*.js` 做跨平台语法检查；`npm test` 使用 Node 内置 `node:test` 运行 `test/` 下的自动化测试（覆盖幂等、目标解析、身份缺失、doctor 退出码、JSON 纯净度等）。
 
 ## 维护原则
 
-- 修改规则时先改 `.agent/rules/`，再运行 `sync`。
-- 修改技能时先改 `.agent/skills/`，再运行 `sync`。
-- 修改团队成员和提交邮箱时先改 `.agent/team/members.yml`，再运行 `sync`。
+- 修改规则时先改 `.agents/rules/`，再运行 `sync`。
+- 修改技能时先改 `.agents/skills/`，再运行 `sync`。
+- 修改团队成员和提交邮箱时先改 `.agents/team/members.yml`，再运行 `sync`。
 - 首次使用或更换操作者时运行 `init`，生成本地 `AGENTS.md` / `CLAUDE.md` 并配置本仓库 Git author；规则更新后运行 `sync` 刷新本地入口文件。
-- `init` 会优先按 GitHub 用户名或提交邮箱匹配 `.agent/team/members.yml`，再从 `.agent/team/roles.yml` 写入对应角色说明。
+- `init` 会优先按 GitHub 用户名或提交邮箱匹配 `.agents/team/members.yml`，再从 `.agents/team/roles.yml` 写入对应角色说明。
 - `.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商目录是本地生成物，已加入 `.gitignore`，不要长期手工维护或提交。
 - 生成文件顶部带中文生成标记。
 - `doctor` 用于本地 `sync` 后校验生成物是否一致；厂商目录被忽略时，CI 不应把生成物作为提交物检查。

@@ -44,7 +44,7 @@ after(() => {
 function makeFixture() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-rules-"));
   cleanup.push(dir);
-  fs.cpSync(path.join(repoRoot, ".agent"), path.join(dir, ".agent"), { recursive: true });
+  fs.cpSync(path.join(repoRoot, ".agents"), path.join(dir, ".agents"), { recursive: true });
   execFileSync("git", ["init", "-q"], { cwd: dir });
   return createRepo(dir);
 }

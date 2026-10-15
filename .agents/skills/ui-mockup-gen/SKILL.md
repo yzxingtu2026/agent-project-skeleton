@@ -14,7 +14,7 @@ description: 通用视觉素材生成技能包。通过 OpenAI 兼容图像 API 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install openai Pillow
-.venv/bin/python .agent/skills/ui-mockup-gen/scripts/<script>.py --help
+.venv/bin/python .agents/skills/ui-mockup-gen/scripts/<script>.py --help
 ```
 
 ## 模块索引

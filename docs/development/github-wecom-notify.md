@@ -1,6 +1,6 @@
 # GitHub Issue/PR 企业微信通知
 
-模板内置一套可选的 GitHub Actions 企业微信协作通知能力，用于把 Issue/PR 分配、评论、审核和 main 分支更新事件推送到项目企业微信群，并按 `.agent/team/members.yml` 自动提醒对应成员。
+模板内置一套可选的 GitHub Actions 企业微信协作通知能力，用于把 Issue/PR 分配、评论、审核和 main 分支更新事件推送到项目企业微信群，并按 `.agents/team/members.yml` 自动提醒对应成员。
 
 ## 消息展示策略
 
@@ -15,14 +15,14 @@
 
 1. 在目标企业微信群中创建消息推送，取得 Webhook URL。
 2. 在 GitHub Actions Secrets 中配置 `WECOM_COLLAB_WEBHOOK`。
-3. 确认 `.agent/team/members.yml` 已维护成员 GitHub 用户名和企业微信 userid。
+3. 确认 `.agents/team/members.yml` 已维护成员 GitHub 用户名和企业微信 userid。
 4. 将 `.github/notification.yml` 的 `enabled` 改为 `true`。
 
 Webhook URL 中包含调用凭证，禁止提交到仓库、Issue、PR、日志或公开文档。
 
 ## 维护成员映射
 
-成员映射统一维护在 `.agent/team/members.yml`：
+成员映射统一维护在 `.agents/team/members.yml`：
 
 ```yaml
 members:

@@ -98,7 +98,7 @@ function collectStatus(repo, targets, options = {}) {
   }));
 
   return {
-    sourcesPresent: repo.exists(".agent/rules") && repo.exists(".agent/adapters"),
+    sourcesPresent: repo.exists(".agents/rules") && repo.exists(".agents/adapters"),
     operator,
     artifacts: artifactReports,
     targetStatus,

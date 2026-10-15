@@ -2,7 +2,7 @@
   "rules": [
     {
       "id": "main",
-      "source": ".agent/rules/main.md",
+      "source": ".agents/rules/main.md",
       "qoder": {
         "path": ".qoder/rules/main.md",
         "frontmatter": {
@@ -19,7 +19,7 @@
     },
     {
       "id": "branching-strategy",
-      "source": ".agent/rules/branching-strategy.md",
+      "source": ".agents/rules/branching-strategy.md",
       "qoder": {
         "path": ".qoder/rules/branching-strategy.md",
         "frontmatter": {
@@ -37,7 +37,7 @@
     },
     {
       "id": "github-issues-workflow",
-      "source": ".agent/rules/github-issues-workflow.md",
+      "source": ".agents/rules/github-issues-workflow.md",
       "qoder": {
         "path": ".qoder/rules/github-issues-workflow.md",
         "frontmatter": {
@@ -55,7 +55,7 @@
     },
     {
       "id": "project-context-and-docs",
-      "source": ".agent/rules/project-context-and-docs.md",
+      "source": ".agents/rules/project-context-and-docs.md",
       "qoder": {
         "path": ".qoder/rules/project-context-and-docs.md",
         "frontmatter": {
@@ -73,7 +73,7 @@
     },
     {
       "id": "team-escalation",
-      "source": ".agent/rules/team-escalation.md",
+      "source": ".agents/rules/team-escalation.md",
       "qoder": {
         "path": ".qoder/rules/team-escalation.md",
         "frontmatter": {

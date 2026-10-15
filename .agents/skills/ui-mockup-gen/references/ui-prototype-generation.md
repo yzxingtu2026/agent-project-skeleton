@@ -87,13 +87,13 @@
 ### 命令入口
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py
 ```
 
 启动基本任务：
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py start \
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py start \
   --prompt "<UI 需求描述>" \
   --platform web \
   --style "现代、清爽、适合高频业务操作" \
@@ -104,7 +104,7 @@ python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py start \
 带项目上下文或参考图：
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py start \
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py start \
   --prompt "<UI 需求描述>" \
   --context-file docs/design.md \
   --reference-image docs/brand/color.png \
@@ -143,9 +143,9 @@ python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py start \
 ### 任务生命周期
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py status <task_id>
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py result <task_id>
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py list
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py status <task_id>
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py result <task_id>
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py list
 ```
 
 1. 执行 `start` 并记录 `task_id`。

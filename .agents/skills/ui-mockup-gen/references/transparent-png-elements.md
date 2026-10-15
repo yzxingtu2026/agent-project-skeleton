@@ -66,7 +66,7 @@
 继续使用现有异步生成器：
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py start \
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py start \
   --prompt "<按本模块规范构造的素材 Prompt>" \
   --platform asset \
   --style "<项目视觉风格>" \
@@ -77,7 +77,7 @@ python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py start \
 使用参考图保持品牌或角色一致性：
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py start \
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py start \
   --prompt "<素材 Prompt>" \
   --platform asset \
   --reference-image docs/brand/reference.png \
@@ -88,8 +88,8 @@ python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py start \
 任务查询：
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py status <task_id>
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py result <task_id>
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py status <task_id>
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py result <task_id>
 ```
 
 遵循有限轮询策略。任务仍为 `pending` 或 `running` 时保留 `task_id`，不要终止或重新创建任务。
@@ -105,14 +105,14 @@ python -m pip install Pillow
 自动从四角估算背景色并输出透明 PNG：
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/remove_solid_background.py \
+python .agents/skills/ui-mockup-gen/scripts/remove_solid_background.py \
   docs/images/ui-generated/element-solid-bg.png
 ```
 
 明确指定背景色并自动裁边：
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/remove_solid_background.py \
+python .agents/skills/ui-mockup-gen/scripts/remove_solid_background.py \
   docs/images/ui-generated/element-solid-bg.png \
   --background '#00FF00' \
   --tolerance 28 \

@@ -18,8 +18,8 @@ function renderLocalEntries(repo, profile) {
     ROLE_COMMON_CONSTRAINTS: renderCommonConstraints(repo),
   };
   return {
-    agents: LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/AGENTS.md.tpl", replacements),
-    claude: LOCAL_NOTICE + renderTemplate(repo, ".agent/templates/CLAUDE.md.tpl", replacements),
+    agents: LOCAL_NOTICE + renderTemplate(repo, ".agents/templates/AGENTS.md.tpl", replacements),
+    claude: LOCAL_NOTICE + renderTemplate(repo, ".agents/templates/CLAUDE.md.tpl", replacements),
   };
 }
 

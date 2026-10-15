@@ -6,7 +6,7 @@ routes:
     webhook_secret_name: WECOM_COLLAB_WEBHOOK
 
 members:
-  source: .agent/team/members.yml
+  source: .agents/team/members.yml
 
 events:
   issues:

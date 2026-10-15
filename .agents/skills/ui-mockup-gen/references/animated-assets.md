@@ -76,7 +76,7 @@
 源图已经包含主体和波纹、阴影或光环时，先准备与源图等尺寸的显式主体遮罩和特效遮罩，再运行：
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/prepare_animation_layers.py \
+python .agents/skills/ui-mockup-gen/scripts/prepare_animation_layers.py \
   character-with-effect.png \
   --subject-mask character-subject-mask.png \
   --effect-mask character-effect-mask.png \
@@ -162,7 +162,7 @@ python .agent/skills/ui-mockup-gen/scripts/prepare_animation_layers.py \
 执行：
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/compose_animation_assets.py \
+python .agents/skills/ui-mockup-gen/scripts/compose_animation_assets.py \
   character-idle-scene.json \
   --json
 ```
@@ -202,7 +202,7 @@ python .agent/skills/ui-mockup-gen/scripts/compose_animation_assets.py \
 使用 `generate_mockup.py` 一次生成完整等分网格。默认 `4×2`，从左到右、从上到下播放。所有格使用相同纯色背景，无分隔线、文字、序号和标签。
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py start \
+python .agents/skills/ui-mockup-gen/scripts/generate_mockup.py start \
   --prompt "<动画状态帧 Prompt>" \
   --platform asset \
   --reference-image character.png \
@@ -215,7 +215,7 @@ python .agent/skills/ui-mockup-gen/scripts/generate_mockup.py start \
 ### 3. 整图抠图
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/remove_solid_background.py \
+python .agents/skills/ui-mockup-gen/scripts/remove_solid_background.py \
   character-state-grid-solid-bg.png \
   --output character-state-grid.png
 ```
@@ -225,7 +225,7 @@ python .agent/skills/ui-mockup-gen/scripts/remove_solid_background.py \
 ### 4. 锚点归一化和构建
 
 ```bash
-python .agent/skills/ui-mockup-gen/scripts/build_animation_assets.py \
+python .agents/skills/ui-mockup-gen/scripts/build_animation_assets.py \
   character-state-grid.png \
   --rows 2 \
   --columns 4 \

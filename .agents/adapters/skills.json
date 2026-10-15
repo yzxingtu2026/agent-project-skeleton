@@ -2,7 +2,7 @@
   "skills": [
     {
       "id": "qa-assist",
-      "source": ".agent/skills/qa-assist",
+      "source": ".agents/skills/qa-assist",
       "qoder": {
         "path": ".qoder/skills/qa-assist/SKILL.md"
       },

@@ -4,7 +4,7 @@ import process from "node:process";
 import { buildWeComPayload, postWeComMessage, resolveWeComWebhookUrl } from "./wecom-webhook.mjs";
 
 const rootDir = process.cwd();
-const membersPath = ".agent/team/members.yml";
+const membersPath = ".agents/team/members.yml";
 const configPath = ".github/notification.yml";
 
 function compact(value, fallback = "") {

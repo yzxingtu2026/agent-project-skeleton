@@ -5,8 +5,8 @@ const { readSimpleYaml } = require("./simple-yaml");
 
 function renderAll(repo, targets) {
   const outputs = [];
-  const rulesConfig = repo.readJson(".agent/adapters/rules.json");
-  const skillsConfig = repo.readJson(".agent/adapters/skills.json");
+  const rulesConfig = repo.readJson(".agents/adapters/rules.json");
+  const skillsConfig = repo.readJson(".agents/adapters/skills.json");
 
   for (const rule of rulesConfig.rules) {
     const source = repo.readText(rule.source).trimEnd() + "\n";

@@ -1,7 +1,6 @@
 const { RESULT_STATUS } = require("./constants");
 const { CliError, logInfo } = require("./output");
 const { artifactState, collectStatus, computeArtifacts } = require("./status");
-const { isLocalEntryTarget } = require("./targets");
 
 // 仅写入状态非 current 的生成物，保证重复运行不产生无意义变更。
 function writeChangedArtifacts(repo, artifacts) {
@@ -16,11 +15,10 @@ function writeChangedArtifacts(repo, artifacts) {
   return changedFiles;
 }
 
-// 请求了本地入口目标但身份不完整时，明确报错而非静默跳过。
-function assertOperatorResolved(status, targets) {
-  const needsLocalEntry = [...targets].some((target) => isLocalEntryTarget(target));
-  if (needsLocalEntry && !status.operator.resolved) {
-    throw new CliError("无法解析当前操作者身份，不能生成本地入口文件（AGENTS.md / CLAUDE.md）。", {
+// 生成 AGENTS.md 依赖操作者身份；身份不完整时明确报错而非静默跳过。
+function assertOperatorResolved(status) {
+  if (!status.operator.resolved) {
+    throw new CliError("无法解析当前操作者身份，不能生成本地入口文件 AGENTS.md。", {
       code: "config_incomplete",
       exitCode: 2,
       fix: "请运行 agent-rules init 补全身份，或传入 --name/--github-user/--github-email。",
@@ -28,29 +26,27 @@ function assertOperatorResolved(status, targets) {
   }
 }
 
-function runSync(repo, targets, options = {}) {
-  const status = collectStatus(repo, targets, options);
-  assertOperatorResolved(status, targets);
-  const artifacts = computeArtifacts(repo, targets, status.operator.profile);
+function runSync(repo, options = {}) {
+  const status = collectStatus(repo, options);
+  assertOperatorResolved(status);
+  const artifacts = computeArtifacts(repo, status.operator.profile);
   const changedFiles = writeChangedArtifacts(repo, artifacts);
   if (!changedFiles.length) logInfo("生成物已是最新，无需变更。");
 
-  const next = collectStatus(repo, targets, options);
+  const next = collectStatus(repo, options);
   return {
     repoRoot: repo.root,
     status: RESULT_STATUS.ok,
     exitCode: 0,
     changedFiles,
     operator: next.operator,
-    targets: [...targets],
-    targetStatus: next.targetStatus,
     artifacts: next.artifacts,
     nextAction: next.nextAction,
   };
 }
 
-function runDoctor(repo, targets, options = {}) {
-  const status = collectStatus(repo, targets, options);
+function runDoctor(repo, options = {}) {
+  const status = collectStatus(repo, options);
   const stale = status.artifacts.filter((item) => item.state !== "current");
   const passed = stale.length === 0;
 
@@ -69,46 +65,42 @@ function runDoctor(repo, targets, options = {}) {
     exitCode: passed ? 0 : 3,
     check: { passed, stale },
     operator: status.operator,
-    targets: [...targets],
-    targetStatus: status.targetStatus,
     artifacts: status.artifacts,
     nextAction: status.nextAction,
   };
 }
 
-function runStatus(repo, targets, options = {}) {
-  const status = collectStatus(repo, targets, options);
+function runStatus(repo, options = {}) {
+  const status = collectStatus(repo, options);
   return {
     repoRoot: repo.root,
     status: RESULT_STATUS.ok,
     exitCode: 0,
     sourcesPresent: status.sourcesPresent,
     operator: status.operator,
-    targets: [...targets],
-    targetStatus: status.targetStatus,
     artifacts: status.artifacts,
     nextAction: status.nextAction,
   };
 }
 
 // 幂等入口：缺失则 init，过期则 sync，最新则不动，最后做一致性检查。
-async function runEnsure(repo, targets, options, runInit) {
+async function runEnsure(repo, options, runInit) {
   const actions = [];
   const changedFiles = [];
-  let status = collectStatus(repo, targets, options);
+  let status = collectStatus(repo, options);
 
   if (status.nextAction === "init") {
-    const initResult = await runInit(repo, { ...options, agents: [...targets].join(","), nonInteractive: true });
+    const initResult = await runInit(repo, { ...options, nonInteractive: true });
     actions.push("init");
     changedFiles.push(...initResult.changedFiles);
-    status = collectStatus(repo, targets, options);
+    status = collectStatus(repo, options);
   }
 
   if (status.nextAction === "sync") {
-    const artifacts = computeArtifacts(repo, targets, status.operator.profile);
+    const artifacts = computeArtifacts(repo, status.operator.profile);
     changedFiles.push(...writeChangedArtifacts(repo, artifacts));
     actions.push("sync");
-    status = collectStatus(repo, targets, options);
+    status = collectStatus(repo, options);
   }
 
   if (!actions.length) logInfo("规则环境已是最新，无需变更。");
@@ -124,8 +116,6 @@ async function runEnsure(repo, targets, options, runInit) {
     changedFiles,
     check: { passed, stale },
     operator: status.operator,
-    targets: [...targets],
-    targetStatus: status.targetStatus,
     artifacts: status.artifacts,
     nextAction: passed ? "none" : status.nextAction,
   };

@@ -1,6 +1,6 @@
 # Agent Rules CLI
 
-`agent-rules` 从仓库根目录的 `.agents/` 元结构生成各 AI 编程工具可识别的规则和技能文件，避免手工维护多套重复目录。
+`agent-rules` 把仓库根 `.agents/` 元结构统一收敛为跨工具通用入口 `AGENTS.md`。规则、技能与团队信息只维护在 `.agents/` 一处，各 AI 编程工具直接读取，不再手工维护或生成多套厂商专属目录。
 
 ## 源结构
 
@@ -8,8 +8,7 @@
 - `.agents/skills/`：通用技能源，首批包含 `qa-assist`。
 - `.agents/team/members.yml`：团队成员、GitHub、企业微信通知和提交邮箱映射。
 - `.agents/team/roles.yml`：团队角色说明和通用角色约束。
-- `.agents/adapters/`：不同厂商的输出路径和 frontmatter。
-- `.agents/templates/`：本地 `AGENTS.md`、`CLAUDE.md` 模板。
+- `.agents/templates/AGENTS.md.tpl`：本地入口 `AGENTS.md` 模板。
 
 ## 命令
 
@@ -17,53 +16,38 @@
 npx -y @yz-xingtu/agent-rules@latest init
 npx -y @yz-xingtu/agent-rules@latest sync
 npx -y @yz-xingtu/agent-rules@latest doctor
-npx -y @yz-xingtu/agent-rules@latest status --agents=codex,qoder --json
-npx -y @yz-xingtu/agent-rules@latest ensure --agents=codex,qoder --non-interactive --json
+npx -y @yz-xingtu/agent-rules@latest status --json
+npx -y @yz-xingtu/agent-rules@latest ensure --non-interactive --json
 ```
 
-`init` 每次都会生成通用主引导 `AGENTS.md`，可通过 `--agents=codex,claude,cursor,qoder` 选择额外初始化的 Agent 厂商；默认额外生成 `CLAUDE.md`。选择 `cursor` 或 `qoder` 时，会同步生成对应厂商目录。
+`init` 生成仓库根唯一的跨工具入口 `AGENTS.md`，并配置本仓库 Git author。`sync` 按 `.agents/` 源刷新 `AGENTS.md`，仅在内容变化时写入。`doctor` 校验 `AGENTS.md` 是否与源一致，会同时报告 `missing`（缺失）与 `outdated`（过期）。
 
-`sync` 会刷新本地 `AGENTS.md` 和已存在的 `CLAUDE.md`，再同步厂商目录。`sync` / `doctor` 默认只处理当前仓库已存在的厂商目录与本地入口文件；如果没有任何生成物，需要显式指定目标：
+## 生成模型
 
-```bash
-npx -y @yz-xingtu/agent-rules@latest sync --target=codex,cursor,qoder
-```
-
-## 目标模型（target / agents 统一）
-
-`--agents` 与 `--target` 共用同一套厂商命名，可互换使用；`all` / `auto` 展开全部目标：
-
-| 目标 | 管理的生成物 |
-| --- | --- |
-| `codex` | 根目录 `AGENTS.md`（通用主引导，依赖操作者身份） |
-| `claude` | 根目录 `CLAUDE.md`（依赖操作者身份） |
-| `cursor` | `.cursor/rules/*.mdc` |
-| `qoder` | `.qoder/rules/`、`.qoder/skills/` |
-
-`sync` / `doctor` / `status` / `ensure` 现在都能按目标处理本地入口文件与厂商目录；`doctor` 会同时报告 `missing`（缺失）与 `outdated`（过期）。
+本工具只有一个生成物：仓库根的 `AGENTS.md`（依赖操作者身份，已被 Git 忽略）。它由 `.agents/templates/AGENTS.md.tpl` 与操作者身份渲染而来，并指向 `.agents/` 下的规则、技能与团队信息源。不再生成 `CLAUDE.md`、`.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商专属文件，也不再需要 `--agents` / `--target` 目标参数（传入会被忽略，便于旧脚本平滑过渡）。
 
 ## 面向自动化 Agent 的接口
 
 ### status
 
 ```bash
-agent-rules status --agents=codex,qoder --json
+agent-rules status --json
 ```
 
-只读地汇总：仓库规则源是否存在、请求的目标、操作者身份解析与缺失字段、每个生成物的 `missing` / `outdated` / `current` 状态，以及推荐的下一步动作 `nextAction`（`init` / `sync` / `none`）。
+只读地汇总：仓库规则源是否存在、操作者身份解析与缺失字段、`AGENTS.md` 的 `missing` / `outdated` / `current` 状态，以及推荐的下一步动作 `nextAction`（`init` / `sync` / `none`）。
 
 ### ensure（幂等入口）
 
 ```bash
-agent-rules ensure --agents=codex,qoder --non-interactive --json
+agent-rules ensure --non-interactive --json
 ```
 
-一次调用即可确保目标规则环境可用且最新：未初始化则 `init`，过期则 `sync`，已最新则不改动文件，最后执行一致性检查。重复运行不产生无意义变更（第二次 `actions` 与 `changedFiles` 为空，`status=current`）。
+一次调用即可确保规则环境可用且最新：未初始化则 `init`，过期则 `sync`，已最新则不改动文件，最后执行一致性检查。重复运行不产生无意义变更（第二次 `actions` 与 `changedFiles` 为空，`status=current`）。
 
 ### 非交互 init
 
 ```bash
-agent-rules init --non-interactive --agents=codex,qoder \
+agent-rules init --non-interactive \
   --name="张三" --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com --json
 ```
 
@@ -71,8 +55,8 @@ agent-rules init --non-interactive --agents=codex,qoder \
 
 ### JSON 输出与退出码
 
-- `--json` 时 **stdout 只输出最终 JSON**，人类可读进度改走 stderr；字段结构带 `schemaVersion`（当前 `1.0`）与 `cliVersion`。
-- JSON 顶层字段：`command`、`status`、`repoRoot`、`sourcesPresent`、`targets`、`operator`、`targetStatus`、`artifacts`、`nextAction`，以及 `ensure`/`sync` 的 `actions`、`changedFiles`、`check`，错误时的 `errors`。
+- `--json` 时 **stdout 只输出最终 JSON**，人类可读进度改走 stderr；字段结构带 `schemaVersion`（当前 `2.0`）与 `cliVersion`。
+- JSON 顶层字段：`command`、`status`、`repoRoot`、`sourcesPresent`、`operator`、`artifacts`、`nextAction`，以及 `ensure`/`sync` 的 `actions`、`changedFiles`、`check`，错误时的 `errors`。（`2.0` 起移除厂商扇出相关的 `targets`、`targetStatus` 字段。）
 - 稳定退出码：
 
 | 退出码 | 含义 | 对应 `status` |
@@ -91,15 +75,15 @@ node .agents/tools/agent-rules/cli.js <命令>
 cd .agents/tools/agent-rules && npm run check && npm test
 ```
 
-`npm run check` 对 `cli.js` 与 `src/*.js` 做跨平台语法检查；`npm test` 使用 Node 内置 `node:test` 运行 `test/` 下的自动化测试（覆盖幂等、目标解析、身份缺失、doctor 退出码、JSON 纯净度等）。
+`npm run check` 对 `cli.js` 与 `src/*.js` 做跨平台语法检查；`npm test` 使用 Node 内置 `node:test` 运行 `test/` 下的自动化测试（覆盖幂等、身份缺失、doctor 退出码、JSON 纯净度等）。
 
 ## 维护原则
 
 - 修改规则时先改 `.agents/rules/`，再运行 `sync`。
-- 修改技能时先改 `.agents/skills/`，再运行 `sync`。
+- 修改技能时先改 `.agents/skills/`。
 - 修改团队成员和提交邮箱时先改 `.agents/team/members.yml`，再运行 `sync`。
-- 首次使用或更换操作者时运行 `init`，生成本地 `AGENTS.md` / `CLAUDE.md` 并配置本仓库 Git author；规则更新后运行 `sync` 刷新本地入口文件。
+- 首次使用或更换操作者时运行 `init`，生成本地 `AGENTS.md` 并配置本仓库 Git author；规则更新后运行 `sync` 刷新入口文件。
 - `init` 会优先按 GitHub 用户名或提交邮箱匹配 `.agents/team/members.yml`，再从 `.agents/team/roles.yml` 写入对应角色说明。
-- `.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商目录是本地生成物，已加入 `.gitignore`，不要长期手工维护或提交。
+- `AGENTS.md` 是本地生成物，已加入 `.gitignore`，不要提交到仓库。
 - 生成文件顶部带中文生成标记。
-- `doctor` 用于本地 `sync` 后校验生成物是否一致；厂商目录被忽略时，CI 不应把生成物作为提交物检查。
+- `doctor` 用于本地 `sync` 后校验 `AGENTS.md` 是否与源一致。

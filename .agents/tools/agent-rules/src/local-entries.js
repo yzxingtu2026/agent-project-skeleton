@@ -19,7 +19,6 @@ function renderLocalEntries(repo, profile) {
   };
   return {
     agents: LOCAL_NOTICE + renderTemplate(repo, ".agents/templates/AGENTS.md.tpl", replacements),
-    claude: LOCAL_NOTICE + renderTemplate(repo, ".agents/templates/CLAUDE.md.tpl", replacements),
   };
 }
 

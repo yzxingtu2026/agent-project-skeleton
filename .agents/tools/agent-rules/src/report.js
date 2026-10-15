@@ -20,9 +20,7 @@ function buildPayload(command, result) {
     repoRoot: result.repoRoot,
   };
   if (result.sourcesPresent !== undefined) payload.sourcesPresent = result.sourcesPresent;
-  if (result.targets) payload.targets = result.targets;
   if (result.operator) payload.operator = publicOperator(result.operator);
-  if (result.targetStatus) payload.targetStatus = result.targetStatus;
   if (result.artifacts) payload.artifacts = result.artifacts;
   if (result.nextAction !== undefined) payload.nextAction = result.nextAction;
   if (result.actions) payload.actions = result.actions;
@@ -46,7 +44,7 @@ function printHumanSummary(command, result) {
   if (command === "status") {
     const operator = result.operator || {};
     logInfo(`操作者：${operator.resolved ? `${operator.name}（${operator.githubUsername}）` : "未解析"}`);
-    for (const item of result.targetStatus || []) logInfo(`- ${item.target}: ${item.state}`);
+    for (const item of result.artifacts || []) logInfo(`- ${item.path}: ${item.state}`);
     logInfo(`推荐下一步：${result.nextAction}`);
     return;
   }

@@ -8,7 +8,7 @@
 2. 运行 `npx -y @yz-xingtu/agent-rules@latest init`，填写当前使用者姓名、GitHub 用户名和提交邮箱。
 3. 替换规则源中的占位符：项目名称、仓库地址、默认分支、团队沟通渠道、运行时目录、技术栈和开发硬约束。
 4. 按项目情况调整 `.agents/rules/`、`.agents/skills/`、`.agents/team/`，再运行 `npx -y @yz-xingtu/agent-rules@latest sync`。
-5. 查看本地生成的 `AGENTS.md` / `CLAUDE.md`，确认项目上下文和使用者信息。
+5. 查看本地生成的 `AGENTS.md`，确认项目上下文和使用者信息。
 6. 新增通用封装、统一组件、公共工具或跨模块约定时，同步记录到规则源或 `docs/development/`。
 7. 如需 GitHub Issue/PR 企业微信实时通知，按 `docs/development/github-wecom-notify.md` 配置 Secret 后启用 `.github/notification.yml`。
 
@@ -18,7 +18,6 @@
 .agents/rules/
 .agents/skills/
 .agents/team/
-.agents/adapters/
 .agents/templates/
 .agents/tools/agent-rules/
 docs/development/
@@ -28,14 +27,15 @@ docs/development/
 .github/PULL_REQUEST_TEMPLATE.md
 ```
 
-`.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商目录由 CLI 本地生成，已加入 `.gitignore`，不作为模板源提交。
+规则、技能与团队信息统一维护在 `.agents/` 目录，不再扇出 `.cursor/`、`.qoder/` 等厂商专属规则；各 AI 编程工具直接读取 `.agents/` 与仓库根的 `AGENTS.md`。`AGENTS.md` 由 CLI 本地生成、含个人身份，已加入 `.gitignore`，不作为模板源提交。
 
 ## 建议初始化
 
 ```bash
-npx -y @yz-xingtu/agent-rules@latest init --agents=codex,claude,cursor,qoder
+npx -y @yz-xingtu/agent-rules@latest init
 npx -y @yz-xingtu/agent-rules@latest sync
 git switch -c chore/initialize-project-rules
 ```
 
-`init` 会优先按 GitHub 用户名或提交邮箱匹配 `.agents/team/members.yml`，再从 `.agents/team/roles.yml` 写入对应角色说明。`AGENTS.md` 每次都会生成；`CLAUDE.md` 和厂商目录按 `--agents` 选择生成。后续运行 `sync` 会刷新 `AGENTS.md` 和已存在的 `CLAUDE.md`。这些本地文件包含个人身份和协作偏好，已放入 `.gitignore`，不要提交到仓库。
+`init` 会优先按 GitHub 用户名或提交邮箱匹配 `.agents/team/members.yml`，再从 `.agents/team/roles.yml` 写入对应角色说明，生成仓库根唯一的跨工具入口 `AGENTS.md` 并配置本仓库 Git author。后续运行 `sync` 会按 `.agents/` 源刷新 `AGENTS.md`。该本地文件包含个人身份和协作偏好，已放入 `.gitignore`，不要提交到仓库。
+

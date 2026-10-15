@@ -8,7 +8,7 @@
 
 1. 替换 `README.md` 中的项目介绍。
 2. 运行 `npx -y @yz-xingtu/agent-rules@latest init`，填写当前使用者姓名、GitHub 用户名和提交邮箱。
-3. 运行 `npx -y @yz-xingtu/agent-rules@latest sync` 生成规则和技能文件。
+3. 运行 `npx -y @yz-xingtu/agent-rules@latest sync` 刷新本地入口 `AGENTS.md`。
 4. 按项目技术栈调整 `.agents/rules/main.md` 的开发硬约束，再运行 `sync`。
 5. 按团队实际流程调整 `.agents/rules/team-escalation.md` 中的沟通渠道，再运行 `sync`。
 6. 配置 GitHub labels、分支保护、Issue 模板与 PR 模板。
@@ -18,9 +18,10 @@
 
 - `.agents/rules/`、`.agents/skills/`、`.agents/team/` 是规则、技能和团队信息源结构。
 - `.agents/team/members.yml` 维护成员身份；`.agents/team/roles.yml` 维护角色说明，`init` 会按 GitHub 信息匹配并写入本地入口文件。
-- `.cursor/rules/*`、`.qoder/rules/*`、`.qoder/skills/*` 由 `.agents/tools/agent-rules` 本地生成，并通过 `.gitignore` 排除。
+- 仓库根的 `AGENTS.md` 是唯一本地生成物（跨工具通用入口），由 `.agents/tools/agent-rules` 生成，并通过 `.gitignore` 排除。
 - 首次使用或更换操作者时运行 `npx -y @yz-xingtu/agent-rules@latest init`。
-- 生成物过期时运行 `npx -y @yz-xingtu/agent-rules@latest sync`，它会刷新本地入口文件并同步当前已存在的厂商目录；提交前可运行 `npx -y @yz-xingtu/agent-rules@latest doctor`。
+- 生成物过期时运行 `npx -y @yz-xingtu/agent-rules@latest sync`，它会按 `.agents/` 源刷新 `AGENTS.md`；提交前可运行 `npx -y @yz-xingtu/agent-rules@latest doctor`。
+
 - 面向团队开发者的长说明写入 `docs/development/`。
 - 会直接影响 Agent 行为的硬约束写入 `.agents/rules/`。
 - 新增公共封装、统一组件、公共工具或跨模块约定时，必须同步沉淀规范。

@@ -1,29 +1,25 @@
 const readline = require("readline");
-const { LOCAL_ENTRY_FILES, RESULT_STATUS } = require("./constants");
+const { AGENTS_ENTRY_FILE, RESULT_STATUS } = require("./constants");
 const { writeChangedArtifacts } = require("./commands");
 const { configureGitAuthor } = require("./git");
 const { CliError, logInfo } = require("./output");
 const { describeMissingFields, resolveOperator } = require("./operator");
 const { collectStatus, computeArtifacts } = require("./status");
 const { findTeamMember } = require("./team");
-const { isLocalEntryTarget, parseVendorList } = require("./targets");
-
-const DEFAULT_INIT_TARGETS = "codex,claude";
 
 async function runInit(repo, options) {
   const nonInteractive = Boolean(options.nonInteractive) || !process.stdin.isTTY;
-  const targets = await resolveInitTargets(repo, options, nonInteractive);
   const profile = nonInteractive
     ? resolveNonInteractiveProfile(repo, options)
     : await collectInteractiveProfile(repo, options);
 
-  guardExistingLocalEntries(repo, targets, Boolean(options.force));
+  guardExistingLocalEntry(repo, Boolean(options.force));
 
-  const artifacts = computeArtifacts(repo, targets, profile);
+  const artifacts = computeArtifacts(repo, profile);
   const changedFiles = writeChangedArtifacts(repo, artifacts);
   configureGitAuthor(repo, profile);
 
-  const status = collectStatus(repo, targets, options);
+  const status = collectStatus(repo, options);
   logInfo(`初始化完成，已写入 ${changedFiles.length} 个文件。`);
   return {
     repoRoot: repo.root,
@@ -31,23 +27,9 @@ async function runInit(repo, options) {
     exitCode: 0,
     changedFiles,
     operator: status.operator,
-    targets: [...targets],
-    targetStatus: status.targetStatus,
     artifacts: status.artifacts,
     nextAction: status.nextAction,
   };
-}
-
-async function resolveInitTargets(repo, options, nonInteractive) {
-  if (!options.agents && !nonInteractive && process.stdin.isTTY) {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    try {
-      options.agents = await promptMissing(rl, "Agent 厂商（可多选，逗号分隔）", DEFAULT_INIT_TARGETS);
-    } finally {
-      rl.close();
-    }
-  }
-  return parseVendorList(options.agents || DEFAULT_INIT_TARGETS);
 }
 
 // 非交互：仅依赖显式参数、团队成员匹配、本地 Git 与 gh 身份；缺字段则结构化报错。
@@ -94,19 +76,15 @@ async function collectInteractiveProfile(repo, options) {
   return profile;
 }
 
-// 未加 --force 时，不覆盖已存在的本地入口文件。
-function guardExistingLocalEntries(repo, targets, force) {
+// 未加 --force 时，不覆盖已存在的本地入口文件 AGENTS.md。
+function guardExistingLocalEntry(repo, force) {
   if (force) return;
-  for (const target of targets) {
-    if (!isLocalEntryTarget(target)) continue;
-    const file = LOCAL_ENTRY_FILES[target];
-    if (repo.exists(file)) {
-      throw new CliError(`${file} 已存在。如需覆盖，请重新运行 init 并加上 --force。`, {
-        code: "error",
-        exitCode: 1,
-        fix: `agent-rules init --force --agents=${[...targets].join(",")}`,
-      });
-    }
+  if (repo.exists(AGENTS_ENTRY_FILE)) {
+    throw new CliError(`${AGENTS_ENTRY_FILE} 已存在。如需覆盖，请重新运行 init 并加上 --force。`, {
+      code: "error",
+      exitCode: 1,
+      fix: "agent-rules init --force",
+    });
   }
 }
 

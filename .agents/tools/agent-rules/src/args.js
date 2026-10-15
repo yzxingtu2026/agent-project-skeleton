@@ -1,4 +1,4 @@
-const { COMMANDS, VENDORS } = require("./constants");
+const { COMMANDS } = require("./constants");
 
 function parseOptions(args) {
   const options = {};
@@ -23,17 +23,16 @@ function isKnownCommand(command) {
 }
 
 function printHelp() {
-  const vendors = VENDORS.join(",");
   console.log(`用法：
-  agent-rules init    [--agents=${vendors}] [--non-interactive] [--name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com] [--force] [--json]
-  agent-rules sync    [--target=${vendors}|all] [--json]
-  agent-rules doctor  [--target=${vendors}|all] [--json]
-  agent-rules status  [--agents=${vendors}|all] [--json]
-  agent-rules ensure  [--agents=${vendors}|all] [--non-interactive] [--json]
+  agent-rules init    [--non-interactive] [--name=张三 --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com] [--force] [--json]
+  agent-rules sync    [--json]
+  agent-rules doctor  [--json]
+  agent-rules status  [--json]
+  agent-rules ensure  [--non-interactive] [--json]
 
 说明：
-  --agents 与 --target 共用同一套厂商命名（codex/claude/cursor/qoder）。
-  codex 管理根目录 AGENTS.md，claude 管理 CLAUDE.md，cursor/qoder 管理各自规则与技能目录。
+  规则、技能与团队信息统一维护在仓库根的 .agents/ 目录，不再扇出各厂商专属规则。
+  本工具只生成跨工具通用入口 AGENTS.md（含操作者身份，已被 Git 忽略），并配置本仓库 Git author。
   --json 时 stdout 只输出最终 JSON，人类可读日志改走 stderr。
 
 退出码：

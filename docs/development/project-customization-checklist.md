@@ -2,7 +2,7 @@
 
 - [ ] 替换 `README.md` 中的项目名称、用途和启动说明。
 - [ ] 运行 `npx -y @yz-xingtu/agent-rules@latest init`，填写当前使用者姓名、GitHub 用户名和提交邮箱。
-- [ ] 运行 `npx -y @yz-xingtu/agent-rules@latest sync` 生成规则和技能文件。
+- [ ] 运行 `npx -y @yz-xingtu/agent-rules@latest sync` 刷新本地入口 `AGENTS.md`。
 - [ ] 更新 `.agents/rules/main.md` 的开发硬约束，再运行 `sync`。
 - [ ] 更新 `.agents/rules/team-escalation.md` 中的沟通渠道和负责人，再运行 `sync`。
 - [ ] 更新 `.agents/team/members.yml` 中的团队成员、GitHub 邮箱和企业微信 userid。

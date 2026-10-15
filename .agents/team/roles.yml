@@ -42,6 +42,6 @@ roles:
 
 common_constraints:
   - "PR 目标分支为默认分支，通常是 `main`。"
-  - "可交付工作必须关联 Issue；PR 使用 `Fixes #编号` 或 `Refs #编号`。"
+  - "规划/讨论类工作建 Issue 承载；用户直接要求实施的改动可直接开分支提 PR，允许无关联 Issue。有 Issue 时 PR 用 `Fixes #编号` 或 `Refs #编号`。"
   - "运行时行为变化需要测试；纯文档、规则、CI 配置可按项目规则直接合入。"
   - "测试通过收口遵循：先 approve，再添加 `tested-pass`。"

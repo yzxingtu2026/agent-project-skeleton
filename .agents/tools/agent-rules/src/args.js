@@ -31,7 +31,7 @@ function printHelp() {
   agent-rules ensure  [--non-interactive] [--json]
 
 说明：
-  规则、技能与团队信息统一维护在仓库根的 .agents/ 目录，不再扇出各厂商专属规则。
+  规则与技能统一维护在仓库根的 .agents/ 目录，不再扇出各厂商专属规则。
   本工具只生成跨工具通用入口 AGENTS.md（含操作者身份，已被 Git 忽略），并配置本仓库 Git author。
   --json 时 stdout 只输出最终 JSON，人类可读日志改走 stderr。
 

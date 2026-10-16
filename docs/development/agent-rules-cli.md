@@ -1,13 +1,11 @@
 # Agent Rules CLI
 
-`agent-rules` 把仓库根 `.agents/` 元结构统一收敛为跨工具通用入口 `AGENTS.md`。规则、技能与团队信息只维护在 `.agents/` 一处，各 AI 编程工具直接读取，不再手工维护或生成多套厂商专属目录。
+`agent-rules` 把仓库根 `.agents/` 元结构统一收敛为跨工具通用入口 `AGENTS.md`。规则与技能只维护在 `.agents/` 一处，各 AI 编程工具直接读取，不再手工维护或生成多套厂商专属目录。
 
 ## 源结构
 
-- `.agents/rules/`：团队通用规则源。
+- `.agents/rules/`：通用规则源。
 - `.agents/skills/`：通用技能源，首批包含 `qa-assist`。
-- `.agents/team/members.yml`：团队成员、GitHub、企业微信通知和提交邮箱映射。
-- `.agents/team/roles.yml`：团队角色说明和通用角色约束。
 - `.agents/templates/AGENTS.md.tpl`：本地入口 `AGENTS.md` 模板。
 
 ## 命令
@@ -24,7 +22,7 @@ npx -y @yz-xingtu/agent-rules@latest ensure --non-interactive --json
 
 ## 生成模型
 
-本工具只有一个生成物：仓库根的 `AGENTS.md`（依赖操作者身份，已被 Git 忽略）。它由 `.agents/templates/AGENTS.md.tpl` 与操作者身份渲染而来，并指向 `.agents/` 下的规则、技能与团队信息源。不再生成 `CLAUDE.md`、`.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商专属文件，也不再需要 `--agents` / `--target` 目标参数（传入会被忽略，便于旧脚本平滑过渡）。
+本工具只有一个生成物：仓库根的 `AGENTS.md`（依赖操作者身份，已被 Git 忽略）。它由 `.agents/templates/AGENTS.md.tpl` 与操作者身份渲染而来，并指向 `.agents/` 下的规则与技能源。不再生成 `CLAUDE.md`、`.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商专属文件，也不再需要 `--agents` / `--target` 目标参数（传入会被忽略，便于旧脚本平滑过渡）。
 
 ## 面向自动化 Agent 的接口
 
@@ -51,7 +49,7 @@ agent-rules init --non-interactive \
   --name="张三" --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com --json
 ```
 
-非交互模式不读取 stdin。操作者身份按优先级解析：**显式参数 > `.agents/team/members.yml` 匹配 > 本地 Git 配置 > `gh` 当前登录身份**。信息不足时返回结构化错误（`code=config_incomplete`），列出缺失字段与对应参数，不静默猜测或写入错误身份。离线 / CI 环境可设 `AGENT_RULES_NO_GH=1` 禁用 `gh` 探测，保证行为可确定。
+非交互模式不读取 stdin。操作者身份按优先级解析：**显式参数 > 本地 Git 配置 > `gh` 当前登录身份**。信息不足时返回结构化错误（`code=config_incomplete`），列出缺失字段与对应参数，不静默猜测或写入错误身份。离线 / CI 环境可设 `AGENT_RULES_NO_GH=1` 禁用 `gh` 探测，保证行为可确定。
 
 ### JSON 输出与退出码
 
@@ -81,9 +79,7 @@ cd .agents/tools/agent-rules && npm run check && npm test
 
 - 修改规则时先改 `.agents/rules/`，再运行 `sync`。
 - 修改技能时先改 `.agents/skills/`。
-- 修改团队成员和提交邮箱时先改 `.agents/team/members.yml`，再运行 `sync`。
 - 首次使用或更换操作者时运行 `init`，生成本地 `AGENTS.md` 并配置本仓库 Git author；规则更新后运行 `sync` 刷新入口文件。
-- `init` 会优先按 GitHub 用户名或提交邮箱匹配 `.agents/team/members.yml`，再从 `.agents/team/roles.yml` 写入对应角色说明。
 - `AGENTS.md` 是本地生成物，已加入 `.gitignore`，不要提交到仓库。
 - 生成文件顶部带中文生成标记。
 - `doctor` 用于本地 `sync` 后校验 `AGENTS.md` 是否与源一致。

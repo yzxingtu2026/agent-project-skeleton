@@ -2,7 +2,6 @@ const path = require("path");
 const { DEFAULT_LANGUAGE, DEFAULT_ROLE, LOCAL_NOTICE } = require("./constants");
 const { gitRemoteUrl } = require("./git");
 const { renderTemplate } = require("./template");
-const { findTeamMember, renderCommonConstraints, renderRoleGuide } = require("./team");
 
 function renderLocalEntries(repo, profile) {
   const repository = inferRepositoryInfo(repo);
@@ -14,8 +13,6 @@ function renderLocalEntries(repo, profile) {
     GITHUB_EMAIL: profile.githubEmail,
     USER_ROLE: profile.role,
     USER_LANGUAGE: profile.language,
-    USER_ROLE_GUIDE: renderRoleGuide(repo, profile.role),
-    ROLE_COMMON_CONSTRAINTS: renderCommonConstraints(repo),
   };
   return {
     agents: LOCAL_NOTICE + renderTemplate(repo, ".agents/templates/AGENTS.md.tpl", replacements),
@@ -65,12 +62,6 @@ function parseProfileFromAgents(repo) {
   if (!profile.githubUsername) missingFields.push("githubUsername");
   if (!profile.githubEmail) missingFields.push("githubEmail");
 
-  if (!missingFields.length) {
-    const matchedMember = findTeamMember(repo, profile);
-    if (matchedMember) {
-      profile.role = matchedMember.role || profile.role;
-    }
-  }
   return { profile, missingFields, present: true };
 }
 

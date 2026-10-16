@@ -5,7 +5,6 @@ const { configureGitAuthor } = require("./git");
 const { CliError, logInfo } = require("./output");
 const { describeMissingFields, resolveOperator } = require("./operator");
 const { collectStatus, computeArtifacts } = require("./status");
-const { findTeamMember } = require("./team");
 
 async function runInit(repo, options) {
   const nonInteractive = Boolean(options.nonInteractive) || !process.stdin.isTTY;
@@ -32,7 +31,7 @@ async function runInit(repo, options) {
   };
 }
 
-// 非交互：仅依赖显式参数、团队成员匹配、本地 Git 与 gh 身份；缺字段则结构化报错。
+// 非交互：仅依赖显式参数、本地 Git 与 gh 身份；缺字段则结构化报错。
 function resolveNonInteractiveProfile(repo, options) {
   const { profile, missingFields } = resolveOperator(repo, options);
   if (missingFields.length) {
@@ -62,14 +61,6 @@ async function collectInteractiveProfile(repo, options) {
     } finally {
       rl.close();
     }
-  }
-
-  const matched = findTeamMember(repo, profile);
-  if (matched) {
-    profile.name = options.name || matched.name || profile.name;
-    profile.githubUsername = options.githubUsername || options.githubUser || matched.github?.username || profile.githubUsername;
-    profile.githubEmail = options.githubEmail || options.email || matched.github?.email || profile.githubEmail;
-    profile.role = options.role || matched.role || profile.role;
   }
 
   validateProfile(profile);

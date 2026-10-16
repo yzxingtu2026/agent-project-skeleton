@@ -1,6 +1,6 @@
 # @yz-xingtu/agent-rules
 
-把仓库根 `.agents/` 元结构统一收敛为跨工具通用入口 `AGENTS.md`。规则、技能与团队信息只维护在 `.agents/` 一处，各 AI 编程工具直接读取，不再扇出多套厂商专属目录。
+把仓库根 `.agents/` 元结构统一收敛为跨工具通用入口 `AGENTS.md`。规则与技能只维护在 `.agents/` 一处，各 AI 编程工具直接读取，不再扇出多套厂商专属目录。
 
 ## 使用方式
 
@@ -75,11 +75,11 @@ npx -y @yz-xingtu/agent-rules@latest ensure --non-interactive --json
 
 ## 生成模型
 
-本工具只有一个生成物：仓库根的 `AGENTS.md`。它是面向所有 AI 编程工具的通用入口，内容由 `.agents/templates/AGENTS.md.tpl` 与操作者身份渲染而来，并指向 `.agents/rules/`、`.agents/skills/`、`.agents/team/` 作为规则、技能与团队信息源。不再生成 `CLAUDE.md`、`.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商专属文件。
+本工具只有一个生成物：仓库根的 `AGENTS.md`。它是面向所有 AI 编程工具的通用入口，内容由 `.agents/templates/AGENTS.md.tpl` 与操作者身份渲染而来，并指向 `.agents/rules/`、`.agents/skills/` 作为规则与技能源。不再生成 `CLAUDE.md`、`.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商专属文件。
 
 ## 非交互与身份解析
 
-`init --non-interactive` 不读取 stdin，操作者身份按优先级解析：**显式参数 > `.agents/team/members.yml` 匹配 > 本地 Git 配置 > `gh` 当前登录身份**。信息不足时返回结构化错误（`code=config_incomplete`，退出码 `2`），列出缺失字段与对应参数，不静默猜测。离线/CI 可设 `AGENT_RULES_NO_GH=1` 禁用 `gh` 探测。
+`init --non-interactive` 不读取 stdin，操作者身份按优先级解析：**显式参数 > 本地 Git 配置 > `gh` 当前登录身份**。信息不足时返回结构化错误（`code=config_incomplete`，退出码 `2`），列出缺失字段与对应参数，不静默猜测。离线/CI 可设 `AGENT_RULES_NO_GH=1` 禁用 `gh` 探测。
 
 ## JSON 输出与退出码
 
@@ -97,9 +97,8 @@ npx -y @yz-xingtu/agent-rules@latest ensure --non-interactive --json
 项目需要在仓库根目录维护 `.agents/`：
 
 ```text
-.agents/rules/       团队规则源
+.agents/rules/       规则源
 .agents/skills/      通用技能源
-.agents/team/        团队成员和角色信息
 .agents/templates/   AGENTS.md 模板
 .agents/tools/       agent-rules CLI
 ```

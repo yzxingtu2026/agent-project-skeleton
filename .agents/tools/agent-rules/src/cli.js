@@ -4,7 +4,6 @@ const { runInit } = require("./init");
 const { CliError, logError, setJsonMode } = require("./output");
 const { errorResult, report } = require("./report");
 const { createRepo, ensureAgentWorkspace, findRepoRoot } = require("./repo");
-const { validateSources } = require("./validate");
 
 async function runCli(argv) {
   const command = argv[2] || "help";
@@ -20,7 +19,6 @@ async function runCli(argv) {
   try {
     const repo = createRepo(repoRoot);
     ensureAgentWorkspace(repo);
-    validateSources(repo);
 
     const result = await dispatch(command, repo, options);
     return report(command, result);

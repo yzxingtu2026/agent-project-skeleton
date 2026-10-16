@@ -2,7 +2,6 @@ const { AGENTS_ENTRY_FILE } = require("./constants");
 const { parseProfileFromAgents, renderLocalEntries } = require("./local-entries");
 const { resolveOperator } = require("./operator");
 const { normalizeNewlines } = require("./repo");
-const { findTeamMember } = require("./team");
 
 // 计算期望生成物：仓库根唯一的跨工具入口 AGENTS.md。
 // profile 为 null 表示身份不完整，无法渲染，标记 needsInit 交由 init 处理。
@@ -34,7 +33,6 @@ function resolveOperatorStatus(repo, options) {
       githubUsername: parsed.githubUsername,
       githubEmail: parsed.githubEmail,
       role: parsed.role,
-      matchedMember: Boolean(findTeamMember(repo, parsed)),
       missingFields: [],
       profile: parsed,
     };
@@ -48,7 +46,6 @@ function resolveOperatorStatus(repo, options) {
     githubUsername: resolved.profile.githubUsername,
     githubEmail: resolved.profile.githubEmail,
     role: resolved.profile.role,
-    matchedMember: resolved.matchedMember,
     missingFields: resolved.missingFields,
     sources: resolved.sources,
     profile: resolved.missingFields.length === 0 ? resolved.profile : null,
@@ -66,7 +63,7 @@ function collectStatus(repo, options = {}) {
   }));
 
   return {
-    sourcesPresent: repo.exists(".agents/templates/AGENTS.md.tpl") && repo.exists(".agents/team"),
+    sourcesPresent: repo.exists(".agents/templates/AGENTS.md.tpl"),
     operator,
     artifacts: artifactReports,
     nextAction: decideNextAction(repo, operator, artifactReports),

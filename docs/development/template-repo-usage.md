@@ -16,8 +16,7 @@
 
 ## 维护原则
 
-- `.agents/rules/`、`.agents/skills/`、`.agents/team/` 是规则、技能和团队信息源结构。
-- `.agents/team/members.yml` 维护成员身份；`.agents/team/roles.yml` 维护角色说明，`init` 会按 GitHub 信息匹配并写入本地入口文件。
+- `.agents/rules/`、`.agents/skills/` 是规则和技能源结构。
 - 仓库根的 `AGENTS.md` 是唯一本地生成物（跨工具通用入口），由 `.agents/tools/agent-rules` 生成，并通过 `.gitignore` 排除。
 - 首次使用或更换操作者时运行 `npx -y @yz-xingtu/agent-rules@latest init`。
 - 生成物过期时运行 `npx -y @yz-xingtu/agent-rules@latest sync`，它会按 `.agents/` 源刷新 `AGENTS.md`；提交前可运行 `npx -y @yz-xingtu/agent-rules@latest doctor`。

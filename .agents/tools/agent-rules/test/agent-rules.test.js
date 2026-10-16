@@ -15,8 +15,10 @@ const toolRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(toolRoot, "..", "..", "..");
 
 const MEMBER = {
+  name: "杨明锋",
   githubUser: "yz-yang04",
   githubEmail: "yz-yang04@users.noreply.github.com",
+  role: "PM项目经理",
 };
 
 let cleanup = [];
@@ -62,7 +64,7 @@ async function silence(fn) {
   }
 }
 
-test("非交互 init 用团队映射补全真实姓名与角色，仅生成 AGENTS.md", async () => {
+test("非交互 init 用显式参数写入姓名与角色，仅生成 AGENTS.md", async () => {
   const repo = makeFixture();
   const result = await silence(() => runInit(repo, { nonInteractive: true, ...MEMBER }));
   assert.equal(result.exitCode, 0);
@@ -129,7 +131,6 @@ test("sync 仅在发生变化时写入 AGENTS.md", async () => {
 test("status 汇总操作者、生成物状态与推荐动作", async () => {
   const repo = makeFixture();
   const before = await silence(() => runStatus(repo, { ...MEMBER }));
-  assert.equal(before.operator.matchedMember, true);
   assert.equal(before.operator.resolved, true);
   assert.equal(before.nextAction, "init");
   assert.deepEqual(before.artifacts, [{ path: "AGENTS.md", state: "missing" }]);
@@ -170,7 +171,6 @@ test("runCli --json 时 stdout 为纯 JSON 且带 schema/版本", async () => {
   assert.equal(payload.schemaVersion, "2.0");
   assert.equal(payload.command, "status");
   assert.equal(payload.cliVersion, require("../package.json").version);
-  assert.equal(payload.operator.matchedMember, true);
   assert.equal(payload.targets, undefined);
   assert.equal(payload.targetStatus, undefined);
   setJsonMode(false);

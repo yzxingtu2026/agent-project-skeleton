@@ -1,11 +1,11 @@
 # Agent Project Skeleton
 
-通用 Agent 协作项目骨架，适合新项目初始化时复用 Issue/PR、分支、文档归档、公共规范沉淀与开发硬约束。
+通用 Agent 协作项目骨架，适合新项目初始化时复用 Issue/PR、分支、文档归档、公共规范沉淀与开发硬约束。兼容 GitHub 与自建 Gitea：`AGENTS.md` 的「代码平台」由 `origin` host 自动判定，Agent 据此自适应选用 `gh`（GitHub）或 `tea`（Gitea）。
 
 ## 使用方式
 
 1. 从本仓库创建新项目：点击 GitHub 的 **Use this template**。
-2. 运行 `npx -y @yz-xingtu/agent-rules@latest init`，填写当前使用者姓名、GitHub 用户名和提交邮箱。
+2. 运行 `npx -y @yz-xingtu/agent-rules@latest init`，填写当前使用者姓名、平台用户名和提交邮箱（GitHub/Gitea 通用）。
 3. 替换规则源中的占位符：项目名称、仓库地址、默认分支、团队沟通渠道、运行时目录、技术栈和开发硬约束。
 4. 按项目情况调整 `.agents/rules/`、`.agents/skills/`，再运行 `npx -y @yz-xingtu/agent-rules@latest sync`。
 5. 查看本地生成的 `AGENTS.md`，确认项目上下文和使用者信息。

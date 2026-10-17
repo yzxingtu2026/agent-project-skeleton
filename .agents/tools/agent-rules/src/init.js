@@ -54,8 +54,8 @@ async function collectInteractiveProfile(repo, options) {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     try {
       profile.name = await promptMissing(rl, "姓名", profile.name);
-      profile.githubUsername = await promptMissing(rl, "GitHub 用户名", profile.githubUsername);
-      profile.githubEmail = await promptMissing(rl, "GitHub 提交邮箱", profile.githubEmail);
+      profile.githubUsername = await promptMissing(rl, "平台用户名（GitHub/Gitea）", profile.githubUsername);
+      profile.githubEmail = await promptMissing(rl, "提交邮箱", profile.githubEmail);
       profile.role = await promptMissing(rl, "角色", profile.role);
       profile.language = await promptMissing(rl, "常用语言", profile.language);
     } finally {

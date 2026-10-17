@@ -3,6 +3,14 @@ const COMMANDS = new Set(["init", "sync", "doctor", "status", "ensure"]);
 const DEFAULT_LANGUAGE = "简体中文";
 const DEFAULT_ROLE = "全栈开发";
 
+// 代码平台标签：由 origin 远端 host 推导，写入 AGENTS.md 供 Agent 自适应选 gh / tea。
+const PLATFORM_LABELS = {
+  github: "GitHub（用 gh）",
+  gitea: "Gitea（用 tea）",
+};
+// 无法从 origin 判定平台时的占位说明，保证模板不残留 {{PLATFORM}}。
+const PLATFORM_UNKNOWN_LABEL = "未检测到 origin（GitHub 用 gh，自建 Gitea 用 tea）";
+
 // 仓库根唯一的跨工具入口文件，由本工具生成，包含操作者身份，已被 Git 忽略。
 const AGENTS_ENTRY_FILE = "AGENTS.md";
 
@@ -35,6 +43,8 @@ module.exports = {
   DEFAULT_ROLE,
   EXIT_CODES,
   LOCAL_NOTICE,
+  PLATFORM_LABELS,
+  PLATFORM_UNKNOWN_LABEL,
   RESULT_STATUS,
   SCHEMA_VERSION,
 };

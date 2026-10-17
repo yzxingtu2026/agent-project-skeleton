@@ -1,5 +1,5 @@
 const path = require("path");
-const { DEFAULT_LANGUAGE, DEFAULT_ROLE, LOCAL_NOTICE } = require("./constants");
+const { DEFAULT_LANGUAGE, DEFAULT_ROLE, LOCAL_NOTICE, PLATFORM_LABELS, PLATFORM_UNKNOWN_LABEL } = require("./constants");
 const { gitRemoteUrl } = require("./git");
 const { renderTemplate } = require("./template");
 
@@ -7,10 +7,11 @@ function renderLocalEntries(repo, profile) {
   const repository = inferRepositoryInfo(repo);
   const replacements = {
     PROJECT_NAME: repository.projectName,
-    GITHUB_REPOSITORY: repository.githubRepository,
+    PLATFORM: repository.platform,
+    REPOSITORY_URL: repository.repositoryUrl,
     USER_NAME: profile.name,
-    GITHUB_USERNAME: profile.githubUsername,
-    GITHUB_EMAIL: profile.githubEmail,
+    PLATFORM_USERNAME: profile.githubUsername,
+    COMMIT_EMAIL: profile.githubEmail,
     USER_ROLE: profile.role,
     USER_LANGUAGE: profile.language,
   };
@@ -43,8 +44,8 @@ function parseProfileFromAgents(repo) {
   const content = repo.readText("AGENTS.md");
   const fields = {
     "姓名": "name",
-    "GitHub 用户名": "githubUsername",
-    "GitHub 提交邮箱": "githubEmail",
+    "平台用户名": "githubUsername",
+    "提交邮箱": "githubEmail",
     "角色": "role",
     "常用语言": "language",
   };
@@ -67,31 +68,52 @@ function parseProfileFromAgents(repo) {
 
 function inferRepositoryInfo(repo) {
   const remoteUrl = gitRemoteUrl(repo, "origin");
-  const parsed = parseGitHubRemote(remoteUrl);
+  const parsed = parseRemote(remoteUrl);
   return {
     projectName: parsed?.repo || path.basename(repo.root),
-    githubRepository: parsed?.url || remoteUrl || "https://github.com/<OWNER>/<REPO>",
+    repositoryUrl: parsed?.url || remoteUrl || "https://<HOST>/<OWNER>/<REPO>",
+    platform: parsed ? PLATFORM_LABELS[parsed.platform] : PLATFORM_UNKNOWN_LABEL,
+    platformKey: parsed?.platform || "",
+    host: parsed?.host || "",
   };
 }
 
-function parseGitHubRemote(remoteUrl) {
+// 解析任意 Git 远端（GitHub / 自建 Gitea / 其它），返回 host、owner、repo、规范 URL 与平台键。
+// 支持 scheme 形式（https/http/ssh/git://，可含 user@、端口）与 scp 形式（[user@]host:owner/repo）。
+function parseRemote(remoteUrl) {
   if (!remoteUrl) return null;
-  const normalized = remoteUrl.trim();
-  const patterns = [
-    /^https:\/\/github\.com\/([^/]+)\/(.+?)(?:\.git)?$/,
-    /^git@github\.com:([^/]+)\/(.+?)(?:\.git)?$/,
-    /^ssh:\/\/git@github\.com\/([^/]+)\/(.+?)(?:\.git)?$/,
-  ];
-  for (const pattern of patterns) {
-    const match = pattern.exec(normalized);
-    if (!match) continue;
-    return {
-      owner: match[1],
-      repo: match[2],
-      url: `https://github.com/${match[1]}/${match[2]}`,
-    };
+  const s = remoteUrl.trim();
+
+  let scheme = "";
+  let host = "";
+  let pathname = "";
+
+  const schemeMatch = /^([a-z][a-z0-9+.-]*):\/\/(?:[^@/]+@)?([^:/]+)(?::\d+)?\/(.+)$/i.exec(s);
+  if (schemeMatch) {
+    scheme = schemeMatch[1].toLowerCase();
+    host = schemeMatch[2];
+    pathname = schemeMatch[3];
+  } else {
+    const scpMatch = /^(?:[^@/]+@)?([^:/]+):(.+)$/.exec(s);
+    if (!scpMatch) return null;
+    host = scpMatch[1];
+    pathname = scpMatch[2];
   }
-  return null;
+
+  const clean = pathname.replace(/\.git$/i, "").replace(/^\/+|\/+$/g, "");
+  const parts = clean.split("/").filter(Boolean);
+  if (parts.length < 2) return null;
+
+  const owner = parts[parts.length - 2];
+  const repo = parts[parts.length - 1];
+  const webScheme = scheme === "ssh" || scheme === "git" || !scheme ? "https" : scheme;
+  return {
+    host,
+    owner,
+    repo,
+    url: `${webScheme}://${host}/${owner}/${repo}`,
+    platform: host.toLowerCase() === "github.com" ? "github" : "gitea",
+  };
 }
 
 function stripInlineCode(value) {
@@ -101,8 +123,8 @@ function stripInlineCode(value) {
 
 module.exports = {
   inferRepositoryInfo,
-  parseGitHubRemote,
   parseProfileFromAgents,
+  parseRemote,
   readProfileFromAgents,
   renderLocalEntries,
 };

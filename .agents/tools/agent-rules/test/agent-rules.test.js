@@ -88,6 +88,22 @@ test("非交互 init 身份不足时返回结构化 config_incomplete", async ()
   );
 });
 
+test("AGENTS.md 按 origin host 渲染代码平台：github→gh，自建→tea", async () => {
+  const ghRepo = makeFixture();
+  execFileSync("git", ["remote", "add", "origin", "https://github.com/acme/proj.git"], { cwd: ghRepo.root });
+  await silence(() => runInit(ghRepo, { nonInteractive: true, ...MEMBER }));
+  const ghContent = ghRepo.readText("AGENTS.md");
+  assert.match(ghContent, /代码平台\*\*：GitHub（用 gh）/);
+  assert.match(ghContent, /远端仓库\*\*：`https:\/\/github\.com\/acme\/proj`/);
+
+  const teaRepo = makeFixture();
+  execFileSync("git", ["remote", "add", "origin", "http://gitea.internal/team/proj.git"], { cwd: teaRepo.root });
+  await silence(() => runInit(teaRepo, { nonInteractive: true, ...MEMBER }));
+  const teaContent = teaRepo.readText("AGENTS.md");
+  assert.match(teaContent, /代码平台\*\*：Gitea（用 tea）/);
+  assert.match(teaContent, /远端仓库\*\*：`http:\/\/gitea\.internal\/team\/proj`/);
+});
+
 test("ensure 幂等：首次初始化，重复运行无变更", async () => {
   const repo = makeFixture();
   const options = { nonInteractive: true, ...MEMBER };

@@ -2,11 +2,11 @@
 
 ## 必守原则
 
-1. **按意图选择载体**：用户在做规划/讨论（梳理方案、拆解需求、明确 AC、排期）时，先建 GitHub Issue 承载；用户直接要求实施某个明确改动时，直接开分支实现并提 PR，由 PR 承载追溯，不必预先建 Issue。范围、AC、结论以 Issue/PR 为准。
+1. **按意图选择载体**：用户在做规划/讨论（梳理方案、拆解需求、明确 AC、排期）时，先建 Issue 承载；用户直接要求实施某个明确改动时，直接开分支实现并提 PR，由 PR 承载追溯，不必预先建 Issue。范围、AC、结论以 Issue/PR 为准。
 2. **禁止直改 main**：从最新 `main` 按 Issue 或聚焦任务开短分支，PR 合入，禁止直接提交或推送 `main`。
 3. **小范围交付**：一条分支只解决一个聚焦任务；超出范围时拆分为独立任务，不静默扩展。
 4. **文档归位**：文档放 `docs/`；规则/规范变化要随代码或 PR 同步沉淀。
-5. **远端操作用 gh**：Issue、PR、CI、Release 优先用 GitHub CLI；不得把 token 写入仓库。
+5. **远端操作按平台选工具**：先看 AGENTS.md「代码平台」（或 `origin` host）——GitHub 用 `gh`，自建 Gitea 用 `tea`（安装/登录/命令见 `.agents/skills/gitea-tea`）；Issue、PR、CI、Release 优先用对应 CLI，不得把 token 写入仓库。
 6. **中文提交**：提交信息使用中文，说明关联 Issue 和变更目的。
 
 ## 开发硬约束
@@ -19,7 +19,7 @@
 
 ## 关联规则
 
-- Issue/PR/测试标签：`github-issues-workflow`
+- Issue/PR/测试标签（平台自适应 gh/tea）：`remote-workflow`
 - 分支策略：`branching-strategy`
 - 文档与规范沉淀：`project-context-and-docs`
 - 无法决策求助：`team-escalation`

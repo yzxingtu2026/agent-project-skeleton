@@ -75,11 +75,11 @@ npx -y @yz-xingtu/agent-rules@latest ensure --non-interactive --json
 
 ## 生成模型
 
-本工具只有一个生成物：仓库根的 `AGENTS.md`。它是面向所有 AI 编程工具的通用入口，内容由 `.agents/templates/AGENTS.md.tpl` 与操作者身份渲染而来，并指向 `.agents/rules/`、`.agents/skills/` 作为规则与技能源。不再生成 `CLAUDE.md`、`.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商专属文件。
+本工具只有一个生成物：仓库根的 `AGENTS.md`。它是面向所有 AI 编程工具的通用入口，内容由 `.agents/templates/AGENTS.md.tpl` 与操作者身份渲染而来，并指向 `.agents/rules/`、`.agents/skills/` 作为规则与技能源。不再生成 `CLAUDE.md`、`.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商专属文件。`AGENTS.md` 的「代码平台」字段由 `origin` host 自动推导（`github.com` → GitHub/`gh`，其它 → Gitea/`tea`），Agent 据此自适应选择远端工具，Gitea 操作见 `.agents/skills/gitea-tea`。
 
 ## 非交互与身份解析
 
-`init --non-interactive` 不读取 stdin，操作者身份按优先级解析：**显式参数 > 本地 Git 配置 > `gh` 当前登录身份**。信息不足时返回结构化错误（`code=config_incomplete`，退出码 `2`），列出缺失字段与对应参数，不静默猜测。离线/CI 可设 `AGENT_RULES_NO_GH=1` 禁用 `gh` 探测。
+`init --non-interactive` 不读取 stdin，操作者身份按优先级解析：**显式参数 > 本地 Git 配置 > `gh` 当前登录身份**。信息不足时返回结构化错误（`code=config_incomplete`，退出码 `2`），列出缺失字段与对应参数，不静默猜测。离线/CI 可设 `AGENT_RULES_NO_GH=1` 禁用 `gh` 探测。`--github-user`/`--github-email` 为平台无关身份旗标（平台用户名 / 提交邮箱），GitHub 与 Gitea 通用。
 
 ## JSON 输出与退出码
 

@@ -5,7 +5,7 @@
 ## 源结构
 
 - `.agents/rules/`：通用规则源。
-- `.agents/skills/`：通用技能源，首批包含 `qa-assist`。
+- `.agents/skills/`：通用技能源，包含 `qa-assist`、`ui-mockup-gen`、`gitea-tea`（自建 Gitea 远端操作）。
 - `.agents/templates/AGENTS.md.tpl`：本地入口 `AGENTS.md` 模板。
 
 ## 命令
@@ -23,6 +23,8 @@ npx -y @yz-xingtu/agent-rules@latest ensure --non-interactive --json
 ## 生成模型
 
 本工具只有一个生成物：仓库根的 `AGENTS.md`（依赖操作者身份，已被 Git 忽略）。它由 `.agents/templates/AGENTS.md.tpl` 与操作者身份渲染而来，并指向 `.agents/` 下的规则与技能源。不再生成 `CLAUDE.md`、`.cursor/`、`.qoder/`、`.codex/`、`.claude/` 等厂商专属文件，也不再需要 `--agents` / `--target` 目标参数（传入会被忽略，便于旧脚本平滑过渡）。
+
+`AGENTS.md` 的「代码平台」字段由 `origin` 远端 host 自动推导：`github.com` → GitHub（用 `gh`），其它 host → Gitea（用 `tea`）。Agent 据此自适应选择远端工具；Gitea 的安装、登录与命令见 `.agents/skills/gitea-tea`。无 `origin` 时该字段回退为提示文案，不残留占位符。
 
 ## 面向自动化 Agent 的接口
 
@@ -49,7 +51,7 @@ agent-rules init --non-interactive \
   --name="张三" --github-user=zhangsan --github-email=zhangsan@users.noreply.github.com --json
 ```
 
-非交互模式不读取 stdin。操作者身份按优先级解析：**显式参数 > 本地 Git 配置 > `gh` 当前登录身份**。信息不足时返回结构化错误（`code=config_incomplete`），列出缺失字段与对应参数，不静默猜测或写入错误身份。离线 / CI 环境可设 `AGENT_RULES_NO_GH=1` 禁用 `gh` 探测，保证行为可确定。
+非交互模式不读取 stdin。操作者身份按优先级解析：**显式参数 > 本地 Git 配置 > `gh` 当前登录身份**。信息不足时返回结构化错误（`code=config_incomplete`），列出缺失字段与对应参数，不静默猜测或写入错误身份。离线 / CI 环境可设 `AGENT_RULES_NO_GH=1` 禁用 `gh` 探测，保证行为可确定。`--github-user` / `--github-email` 为平台无关的身份旗标（分别写入「平台用户名」「提交邮箱」），GitHub 与自建 Gitea 通用；其中 `gh` 身份探测仅对 GitHub 账号生效。
 
 ### JSON 输出与退出码
 

@@ -1,6 +1,6 @@
 {
   "name": "@yz-xingtu/agent-rules",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "将仓库 .agents/ 元结构收敛为跨工具通用入口 AGENTS.md，并为自动化 Agent 提供幂等、机器可读的接口。",
   "main": "./src/cli.js",
   "bin": {
